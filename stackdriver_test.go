@@ -23,8 +23,8 @@ import (
 	"testing"
 	"time"
 
-	"contrib.go.opencensus.io/exporter/stackdriver/internal/testpb"
-	"contrib.go.opencensus.io/exporter/stackdriver/monitoredresource/gcp"
+	"github.com/launchdarkly/opencensus-go-exporter-stackdriver/internal/testpb"
+	"github.com/launchdarkly/opencensus-go-exporter-stackdriver/monitoredresource/gcp"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/trace"
