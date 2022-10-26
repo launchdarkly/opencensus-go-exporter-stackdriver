@@ -15,7 +15,6 @@
 package monitoredresource
 
 import (
-	"contrib.go.opencensus.io/exporter/stackdriver/monitoredresource/aws"
 	"contrib.go.opencensus.io/exporter/stackdriver/monitoredresource/gcp"
 )
 
@@ -77,25 +76,27 @@ func (gce *GCEInstance) MonitoredResource() (resType string, labels map[string]s
 	return gcpGCE.MonitoredResource()
 }
 
-// AWSEC2Instance represents aws_ec2_instance type monitored resource.
-// For definition refer to
-// https://cloud.google.com/monitoring/api/resources#tag_aws_ec2_instance
-// Deprecated: please use aws.EC2Container from "contrib.go.opencensus.io/exporter/stackdriver/monitoredresource/aws".
-type AWSEC2Instance struct {
-	// AWSAccount is the AWS account number for the VM.
-	AWSAccount string
+// REMOVED IN LAUNCHDARKLY FORK - BEGIN
+// // AWSEC2Instance represents aws_ec2_instance type monitored resource.
+// // For definition refer to
+// // https://cloud.google.com/monitoring/api/resources#tag_aws_ec2_instance
+// // Deprecated: please use aws.EC2Container from "contrib.go.opencensus.io/exporter/stackdriver/monitoredresource/aws".
+// type AWSEC2Instance struct {
+// 	// AWSAccount is the AWS account number for the VM.
+// 	AWSAccount string
 
-	// InstanceID is the instance id of the instance.
-	InstanceID string
+// 	// InstanceID is the instance id of the instance.
+// 	InstanceID string
 
-	// Region is the AWS region for the VM. The format of this field is "aws:{region}",
-	// where supported values for {region} are listed at
-	// http://docs.aws.amazon.com/general/latest/gr/rande.html.
-	Region string
-}
+// 	// Region is the AWS region for the VM. The format of this field is "aws:{region}",
+// 	// where supported values for {region} are listed at
+// 	// http://docs.aws.amazon.com/general/latest/gr/rande.html.
+// 	Region string
+// }
 
-// MonitoredResource returns resource type and resource labels for AWSEC2Instance
-func (ec2 *AWSEC2Instance) MonitoredResource() (resType string, labels map[string]string) {
-	awsEC2 := aws.EC2Instance(*ec2)
-	return awsEC2.MonitoredResource()
-}
+// // MonitoredResource returns resource type and resource labels for AWSEC2Instance
+// func (ec2 *AWSEC2Instance) MonitoredResource() (resType string, labels map[string]string) {
+// 	awsEC2 := aws.EC2Instance(*ec2)
+// 	return awsEC2.MonitoredResource()
+// }
+// REMOVED IN LAUNCHDARKLY FORK - END
