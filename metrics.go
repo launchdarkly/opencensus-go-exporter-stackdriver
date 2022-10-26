@@ -35,7 +35,7 @@ import (
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
 	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
 
-	"contrib.go.opencensus.io/exporter/stackdriver/monitoredresource"
+	"github.com/launchdarkly/opencensus-go-exporter-stackdriver/monitoredresource"
 	"go.opencensus.io/metric/metricdata"
 	"go.opencensus.io/resource"
 )
@@ -77,7 +77,7 @@ func (se *statsExporter) uploadMetrics(metrics []*metricdata.Metric) error {
 
 	ctx, span := trace.StartSpan(
 		ctx,
-		"contrib.go.opencensus.io/exporter/stackdriver.uploadMetrics",
+		"github.com/launchdarkly/opencensus-go-exporter-stackdriver.uploadMetrics",
 		trace.WithSampler(trace.NeverSample()),
 	)
 	defer span.End()

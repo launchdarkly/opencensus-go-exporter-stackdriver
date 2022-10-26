@@ -14,7 +14,7 @@
 
 // Package propagation implement X-Cloud-Trace-Context header propagation used
 // by Google Cloud products.
-package propagation // import "contrib.go.opencensus.io/exporter/stackdriver/propagation"
+package propagation // import "github.com/launchdarkly/opencensus-go-exporter-stackdriver/propagation"
 
 import (
 	"encoding/binary"

@@ -213,7 +213,7 @@ func (e *statsExporter) uploadStats(vds []*view.Data) error {
 	defer cancel()
 	ctx, span := trace.StartSpan(
 		ctx,
-		"contrib.go.opencensus.io/exporter/stackdriver.uploadStats",
+		"github.com/launchdarkly/opencensus-go-exporter-stackdriver.uploadStats",
 		trace.WithSampler(trace.NeverSample()),
 	)
 	defer span.End()
