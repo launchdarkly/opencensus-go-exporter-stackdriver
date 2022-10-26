@@ -6,7 +6,6 @@ require (
 	cloud.google.com/go v0.97.0
 	cloud.google.com/go/monitoring v1.1.0
 	cloud.google.com/go/trace v1.0.0
-	github.com/aws/aws-sdk-go v1.37.0
 	github.com/census-instrumentation/opencensus-proto v0.3.0
 	github.com/golang/protobuf v1.5.2
 	github.com/google/go-cmp v0.5.6
