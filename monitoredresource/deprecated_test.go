@@ -70,18 +70,20 @@ func TestGCEInstanceMonitoredResources(t *testing.T) {
 	}
 }
 
-func TestAWSEC2InstanceMonitoredResources(t *testing.T) {
-	autoDetected := AWSEC2Instance{
-		AWSAccount: "123456789012",
-		InstanceID: "i-1234567890abcdef0",
-		Region:     "aws:us-west-2",
-	}
+// REMOVED IN LAUNCHDARKLY FORK - BEGIN
+// func TestAWSEC2InstanceMonitoredResources(t *testing.T) {
+// 	autoDetected := AWSEC2Instance{
+// 		AWSAccount: "123456789012",
+// 		InstanceID: "i-1234567890abcdef0",
+// 		Region:     "aws:us-west-2",
+// 	}
 
-	resType, labels := autoDetected.MonitoredResource()
-	if resType != "aws_ec2_instance" ||
-		labels["instance_id"] != "i-1234567890abcdef0" ||
-		labels["aws_account"] != "123456789012" ||
-		labels["region"] != "aws:us-west-2" {
-		t.Errorf("AWSEC2InstanceMonitoredResource Failed: %v", autoDetected)
-	}
-}
+// 	resType, labels := autoDetected.MonitoredResource()
+// 	if resType != "aws_ec2_instance" ||
+// 		labels["instance_id"] != "i-1234567890abcdef0" ||
+// 		labels["aws_account"] != "123456789012" ||
+// 		labels["region"] != "aws:us-west-2" {
+// 		t.Errorf("AWSEC2InstanceMonitoredResource Failed: %v", autoDetected)
+// 	}
+// }
+// REMOVED IN LAUNCHDARKLY FORK - END

@@ -164,31 +164,33 @@ func TestDefaultMapResource(t *testing.T) {
 				},
 			},
 		},
-		// Test autodecting missing Resource labels
-		{
-			input: &resource.Resource{
-				Type: resourcekeys.CloudType,
-				Labels: map[string]string{
-					stackdriverProjectID:          "proj1",
-					resourcekeys.CloudKeyProvider: resourcekeys.CloudProviderAWS,
-					"extra_key":                   "must be ignored",
-				},
-			},
-			autoRes: &monitoredresource.AWSEC2Instance{
-				AWSAccount: "account1",
-				InstanceID: "inst1",
-				Region:     "region1",
-			},
-			want: &monitoredrespb.MonitoredResource{
-				Type: "aws_ec2_instance",
-				Labels: map[string]string{
-					"project_id":  "proj1",
-					"instance_id": "inst1",
-					"region":      "aws:region1",
-					"aws_account": "account1",
-				},
-			},
-		},
+		// REMOVED IN LAUNCHDARKLY FORK - BEGIN
+		// // Test autodecting missing Resource labels
+		// {
+		// 	input: &resource.Resource{
+		// 		Type: resourcekeys.CloudType,
+		// 		Labels: map[string]string{
+		// 			stackdriverProjectID:          "proj1",
+		// 			resourcekeys.CloudKeyProvider: resourcekeys.CloudProviderAWS,
+		// 			"extra_key":                   "must be ignored",
+		// 		},
+		// 	},
+		// 	autoRes: &monitoredresource.AWSEC2Instance{
+		// 		AWSAccount: "account1",
+		// 		InstanceID: "inst1",
+		// 		Region:     "region1",
+		// 	},
+		// 	want: &monitoredrespb.MonitoredResource{
+		// 		Type: "aws_ec2_instance",
+		// 		Labels: map[string]string{
+		// 			"project_id":  "proj1",
+		// 			"instance_id": "inst1",
+		// 			"region":      "aws:region1",
+		// 			"aws_account": "account1",
+		// 		},
+		// 	},
+		// },
+		// REMOVED IN LAUNCHDARKLY FORK - END
 		// Test autodetecting partial missing Resource labels
 		{
 			input: &resource.Resource{

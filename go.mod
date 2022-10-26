@@ -6,7 +6,6 @@ require (
 	cloud.google.com/go/compute v1.5.0
 	cloud.google.com/go/monitoring v1.1.0
 	cloud.google.com/go/trace v1.0.0
-	github.com/aws/aws-sdk-go v1.43.31
 	github.com/census-instrumentation/opencensus-proto v0.3.0
 	github.com/golang/protobuf v1.5.2
 	github.com/google/go-cmp v0.5.7
@@ -29,7 +28,6 @@ require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/googleapis/gax-go/v2 v2.2.0 // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
