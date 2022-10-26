@@ -1,4 +1,4 @@
-module contrib.go.opencensus.io/exporter/stackdriver
+module github.com/launchdarkly/opencensus-go-exporter-stackdriver
 
 go 1.15
 

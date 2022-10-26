@@ -123,7 +123,7 @@ func (e *traceExporter) Flush() {
 func (e *traceExporter) pushTraceSpans(ctx context.Context, node *commonpb.Node, r *resourcepb.Resource, spans []*trace.SpanData) (int, error) {
 	ctx, span := trace.StartSpan(
 		ctx,
-		"contrib.go.opencensus.io/exporter/stackdriver.PushTraceSpans",
+		"github.com/launchdarkly/opencensus-go-exporter-stackdriver.PushTraceSpans",
 		trace.WithSampler(trace.NeverSample()),
 	)
 	defer span.End()
@@ -167,7 +167,7 @@ func (e *traceExporter) uploadSpans(spans []*tracepb.Span) {
 	defer cancel()
 	ctx, span := trace.StartSpan(
 		ctx,
-		"contrib.go.opencensus.io/exporter/stackdriver.uploadSpans",
+		"github.com/launchdarkly/opencensus-go-exporter-stackdriver.uploadSpans",
 		trace.WithSampler(trace.NeverSample()),
 	)
 	defer span.End()
