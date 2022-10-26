@@ -35,7 +35,7 @@ import (
 	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
 	"google.golang.org/grpc"
 
-	sd "contrib.go.opencensus.io/exporter/stackdriver"
+	sd "github.com/launchdarkly/opencensus-go-exporter-stackdriver"
 	metricspb "github.com/census-instrumentation/opencensus-proto/gen-go/metrics/v1"
 	resourcepb "github.com/census-instrumentation/opencensus-proto/gen-go/resource/v1"
 )
