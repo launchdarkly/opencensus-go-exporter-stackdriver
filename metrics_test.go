@@ -30,7 +30,7 @@ import (
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
 	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
 
-	"contrib.go.opencensus.io/exporter/stackdriver/monitoredresource"
+	"github.com/launchdarkly/opencensus-go-exporter-stackdriver/monitoredresource"
 	"go.opencensus.io/metric/metricdata"
 	"go.opencensus.io/resource"
 	"go.opencensus.io/trace"

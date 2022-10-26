@@ -21,7 +21,7 @@ import (
 	"time"
 
 	monitoring "cloud.google.com/go/monitoring/apiv3/v2"
-	"contrib.go.opencensus.io/exporter/stackdriver/monitoredresource"
+	"github.com/launchdarkly/opencensus-go-exporter-stackdriver/monitoredresource"
 
 	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/google/go-cmp/cmp"

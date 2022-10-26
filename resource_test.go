@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package stackdriver // import "contrib.go.opencensus.io/exporter/stackdriver"
+package stackdriver // import "github.com/launchdarkly/opencensus-go-exporter-stackdriver"
 
 import (
 	"fmt"
 	"sync"
 	"testing"
 
-	"contrib.go.opencensus.io/exporter/stackdriver/monitoredresource"
-	"contrib.go.opencensus.io/exporter/stackdriver/monitoredresource/gcp"
+	"github.com/launchdarkly/opencensus-go-exporter-stackdriver/monitoredresource"
+	"github.com/launchdarkly/opencensus-go-exporter-stackdriver/monitoredresource/gcp"
 	"github.com/google/go-cmp/cmp"
 	"go.opencensus.io/resource"
 	"go.opencensus.io/resource/resourcekeys"
