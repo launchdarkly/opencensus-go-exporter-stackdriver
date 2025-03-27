@@ -85,7 +85,7 @@ func TestExport(t *testing.T) {
 		span.AddLink(trace.Link{Type: trace.LinkTypeChild, TraceID: spanContext.TraceID, SpanID: spanContext.SpanID})
 		time.Sleep(150 * time.Millisecond) // do work
 		span.End()
-		rw.Write([]byte("Hello, world!"))
+		rw.Write([]byte("Hello, world!")) //nolint: errcheck
 	})
 	server := httptest.NewServer(&ochttp.Handler{Handler: handler})
 	defer server.Close()
@@ -137,7 +137,7 @@ func TestGRPC(t *testing.T) {
 	client, done := testpb.NewTestClient(t)
 	defer done()
 
-	client.Single(context.Background(), &testpb.FooRequest{SleepNanos: int64(42 * time.Millisecond)})
+	client.Single(context.Background(), &testpb.FooRequest{SleepNanos: int64(42 * time.Millisecond)}) //nolint: errcheck
 }
 
 func TestUserAgent(t *testing.T) {
