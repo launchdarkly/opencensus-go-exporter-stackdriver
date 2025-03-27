@@ -16,6 +16,10 @@ EMBEDMD=embedmd
 STATICCHECK=staticcheck
 # TODO decide if we need to change these names.
 README_FILES := $(shell find . -name '*README.md' | sort | tr '\n' ' ')
+GOLANGCI_LINT_VERSION=v1.64.5
+
+LINTER=./bin/golangci-lint
+LINTER_VERSION_FILE=./bin/.golangci-lint-version-$(GOLANGCI_LINT_VERSION)
 
 .DEFAULT_GOAL := defaul-goal
 
@@ -67,16 +71,14 @@ fmt:
 	    echo "Fmt finished successfully"; \
 	fi
 
+$(LINTER_VERSION_FILE):
+	rm -f $(LINTER)
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s $(GOLANGCI_LINT_VERSION)
+	touch $(LINTER_VERSION_FILE)
+
 .PHONY: lint
-lint:
-	@LINTOUT=`$(GOLINT) $(ALL_PKGS) 2>&1`; \
-	if [ "$$LINTOUT" ]; then \
-		echo "$(GOLINT) FAILED => clean the following lint errors:\n"; \
-		echo "$$LINTOUT\n"; \
-		exit 1; \
-	else \
-	    echo "Lint finished successfully"; \
-	fi
+lint: $(LINTER_VERSION_FILE)
+	$(LINTER) run ./...
 
 .PHONY: vet
 vet:
@@ -89,7 +91,7 @@ vet:
 	else \
 	    echo "Vet finished successfully"; \
 	fi
-	
+
 .PHONY: embedmd
 embedmd:
 	@EMBEDMDOUT=`$(EMBEDMD) -d $(README_FILES) 2>&1`; \

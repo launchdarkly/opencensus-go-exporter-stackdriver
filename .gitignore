@@ -1,6 +1,7 @@
 # GoLand IDEA
 /.idea/
 *.iml
+/bin
 
 # VS Code
 .vscode

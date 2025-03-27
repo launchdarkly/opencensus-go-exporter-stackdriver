@@ -78,7 +78,7 @@ func NewTestClient(l *testing.T) (client FooClient, cleanup func()) {
 	}
 	server := grpc.NewServer(grpc.StatsHandler(&ocgrpc.ServerHandler{}))
 	RegisterFooServer(server, &testServer{})
-	go server.Serve(listener)
+	go server.Serve(listener) //nolint: errcheck
 
 	// Initialize client.
 	clientConn, err := grpc.Dial(
