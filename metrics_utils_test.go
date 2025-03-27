@@ -28,7 +28,7 @@ import (
 
 	googlemetricpb "google.golang.org/genproto/googleapis/api/metric"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
-	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
+	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3" //nolint: staticcheck
 	"google.golang.org/protobuf/testing/protocmp"
 )
 
@@ -36,7 +36,7 @@ func cmpResource(got, want *monitoredrespb.MonitoredResource) string {
 	return cmp.Diff(got, want, cmpopts.IgnoreUnexported(monitoredrespb.MonitoredResource{}))
 }
 
-func requireTimeSeriesRequestEqual(t *testing.T, got, want []*monitoringpb.CreateTimeSeriesRequest) {
+func requireTimeSeriesRequestEqual(t *testing.T, got, want []*monitoringpb.CreateTimeSeriesRequest) { //nolint: staticcheck
 	if len(got) != len(want) {
 		t.Fatalf("Unexpected slice len got: %d want: %d", len(got), len(want))
 	}
@@ -56,7 +56,7 @@ func requireTimeSeriesRequestEqual(t *testing.T, got, want []*monitoringpb.Creat
 	}
 }
 
-func cmpTSReqs(got, want []*monitoringpb.CreateTimeSeriesRequest) string {
+func cmpTSReqs(got, want []*monitoringpb.CreateTimeSeriesRequest) string { //nolint: staticcheck
 	return cmp.Diff(got, want, protocmp.Transform(), protocmp.IgnoreEnums(googlemetricpb.MetricDescriptor_METRIC_KIND_UNSPECIFIED, googlemetricpb.MetricDescriptor_VALUE_TYPE_UNSPECIFIED))
 }
 
@@ -64,14 +64,14 @@ func cmpMD(got, want *googlemetricpb.MetricDescriptor) string {
 	return cmp.Diff(got, want, protocmp.Transform())
 }
 
-func cmpMDReq(got, want *monitoringpb.CreateMetricDescriptorRequest) string {
+func cmpMDReq(got, want *monitoringpb.CreateMetricDescriptorRequest) string { //nolint: staticcheck
 	return cmp.Diff(got, want, protocmp.Transform())
 }
 
-func cmpMDReqs(got, want []*monitoringpb.CreateMetricDescriptorRequest) string {
+func cmpMDReqs(got, want []*monitoringpb.CreateMetricDescriptorRequest) string { //nolint: staticcheck
 	return cmp.Diff(got, want, protocmp.Transform())
 }
 
-func cmpPoint(got, want *monitoringpb.Point) string {
+func cmpPoint(got, want *monitoringpb.Point) string { //nolint: staticcheck
 	return cmp.Diff(got, want, protocmp.Transform())
 }

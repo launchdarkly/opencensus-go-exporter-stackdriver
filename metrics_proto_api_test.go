@@ -33,19 +33,19 @@ import (
 
 	googlemetricpb "google.golang.org/genproto/googleapis/api/metric"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
-	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
+	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3" //nolint: staticcheck
 	"google.golang.org/grpc"
 
-	sd "github.com/launchdarkly/opencensus-go-exporter-stackdriver"
 	metricspb "github.com/census-instrumentation/opencensus-proto/gen-go/metrics/v1"
 	resourcepb "github.com/census-instrumentation/opencensus-proto/gen-go/resource/v1"
+	sd "github.com/launchdarkly/opencensus-go-exporter-stackdriver"
 )
 
 type testCases struct {
 	name     string
 	inMetric []*metricspb.Metric
-	outTSR   []*monitoringpb.CreateTimeSeriesRequest
-	outMDR   []*monitoringpb.CreateMetricDescriptorRequest
+	outTSR   []*monitoringpb.CreateTimeSeriesRequest       //nolint: staticcheck
+	outMDR   []*monitoringpb.CreateMetricDescriptorRequest //nolint: staticcheck
 }
 
 var (
@@ -293,7 +293,7 @@ func TestExportMaxTSPerRequest(t *testing.T) {
 		tcFromFile.inMetric[0].Timeseries = append(tcFromFile.inMetric[0].Timeseries, ts)
 
 		j := i / 200
-		outTS := proto.Clone(tcFromFile.outTSR[0].TimeSeries[0]).(*monitoringpb.TimeSeries)
+		outTS := proto.Clone(tcFromFile.outTSR[0].TimeSeries[0]).(*monitoringpb.TimeSeries) //nolint: staticcheck
 		outTS.Metric = &googlemetricpb.Metric{
 			Type: tcFromFile.outMDR[0].MetricDescriptor.Type,
 			Labels: map[string]string{
@@ -302,7 +302,7 @@ func TestExportMaxTSPerRequest(t *testing.T) {
 			},
 		}
 		if j > len(tcFromFile.outTSR)-1 {
-			newOutTSR := &monitoringpb.CreateTimeSeriesRequest{
+			newOutTSR := &monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				Name: tcFromFile.outTSR[0].Name,
 			}
 			tcFromFile.outTSR = append(tcFromFile.outTSR, newOutTSR)
@@ -352,7 +352,7 @@ func TestExportMaxTSPerRequestAcrossTwoMetrics(t *testing.T) {
 
 			// pick metric-1 for first 250 time-series and metric-2 for next 250 time-series.
 			mt := tcFromFile.outMDR[k].MetricDescriptor.Type
-			outTS := proto.Clone(tcFromFile.outTSR[0].TimeSeries[0]).(*monitoringpb.TimeSeries)
+			outTS := proto.Clone(tcFromFile.outTSR[0].TimeSeries[0]).(*monitoringpb.TimeSeries) //nolint: staticcheck
 			outTS.Metric = &googlemetricpb.Metric{
 				Type: mt,
 				Labels: map[string]string{
@@ -361,7 +361,7 @@ func TestExportMaxTSPerRequestAcrossTwoMetrics(t *testing.T) {
 				},
 			}
 			if j > len(tcFromFile.outTSR)-1 {
-				newOutTSR := &monitoringpb.CreateTimeSeriesRequest{
+				newOutTSR := &monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 					Name: tcFromFile.outTSR[0].Name,
 				}
 				tcFromFile.outTSR = append(tcFromFile.outTSR, newOutTSR)
@@ -395,19 +395,19 @@ func executeTestCase(t *testing.T, tc *testCases, se *sd.Exporter, server *fakeM
 		t.Fatalf("Name: %s, Error pushing metrics, dropped:%d err:%v", tc.name, dropped, err)
 	}
 
-	gotTimeSeries := []*monitoringpb.CreateTimeSeriesRequest{}
-	server.forEachStackdriverTimeSeries(func(sdt *monitoringpb.CreateTimeSeriesRequest) {
+	gotTimeSeries := []*monitoringpb.CreateTimeSeriesRequest{}                            //nolint: staticcheck
+	server.forEachStackdriverTimeSeries(func(sdt *monitoringpb.CreateTimeSeriesRequest) { //nolint: staticcheck
 		gotTimeSeries = append(gotTimeSeries, sdt)
 	})
-	server.forEachServiceStackdriverTimeSeries(func(sdt *monitoringpb.CreateTimeSeriesRequest) {
+	server.forEachServiceStackdriverTimeSeries(func(sdt *monitoringpb.CreateTimeSeriesRequest) { //nolint: staticcheck
 		gotTimeSeries = append(gotTimeSeries, sdt)
 	})
 	if diff, idx := requireTimeSeriesRequestEqual(t, gotTimeSeries, tc.outTSR); diff != "" {
 		t.Errorf("Name[%s], TimeSeries[%d], Error: -got +want %s\n", tc.name, idx, diff)
 	}
 
-	gotCreateMDRequest := []*monitoringpb.CreateMetricDescriptorRequest{}
-	server.forEachStackdriverMetricDescriptor(func(sdm *monitoringpb.CreateMetricDescriptorRequest) {
+	gotCreateMDRequest := []*monitoringpb.CreateMetricDescriptorRequest{}                             //nolint: staticcheck
+	server.forEachStackdriverMetricDescriptor(func(sdm *monitoringpb.CreateMetricDescriptorRequest) { //nolint: staticcheck
 		gotCreateMDRequest = append(gotCreateMDRequest, sdm)
 	})
 
@@ -448,7 +448,7 @@ func readTestCaseFromFiles(t *testing.T, filename string) *testCases {
 
 	strOutMDRs := strings.Split(string(f), "---")
 	for _, strOutMDR := range strOutMDRs {
-		outMDR := monitoringpb.CreateMetricDescriptorRequest{}
+		outMDR := monitoringpb.CreateMetricDescriptorRequest{} //nolint: staticcheck
 		err = prototext.Unmarshal([]byte(strOutMDR), &outMDR)
 		if err != nil {
 			t.Fatalf("error unmarshalling CreateMetricDescriptorRequest protos from file " + filename)
@@ -466,7 +466,7 @@ func readTestCaseFromFiles(t *testing.T, filename string) *testCases {
 
 	strOutTSRs := strings.Split(string(f), "---")
 	for _, strOutTSR := range strOutTSRs {
-		outTSR := monitoringpb.CreateTimeSeriesRequest{}
+		outTSR := monitoringpb.CreateTimeSeriesRequest{} //nolint: staticcheck
 		err = prototext.Unmarshal([]byte(strOutTSR), &outTSR)
 		if err != nil {
 			t.Fatalf("error unmarshalling CreateTimeSeriesRequest protos from file " + filename)
@@ -517,9 +517,9 @@ func readTestResourcesFiles(t *testing.T, filename string) ([]*resourcepb.Resour
 type fakeMetricsServer struct {
 	monitoringpb.MetricServiceServer
 	mu                           sync.RWMutex
-	stackdriverTimeSeries        []*monitoringpb.CreateTimeSeriesRequest
-	stackdriverServiceTimeSeries []*monitoringpb.CreateTimeSeriesRequest
-	stackdriverMetricDescriptors []*monitoringpb.CreateMetricDescriptorRequest
+	stackdriverTimeSeries        []*monitoringpb.CreateTimeSeriesRequest       //nolint: staticcheck
+	stackdriverServiceTimeSeries []*monitoringpb.CreateTimeSeriesRequest       //nolint: staticcheck
+	stackdriverMetricDescriptors []*monitoringpb.CreateMetricDescriptorRequest //nolint: staticcheck
 }
 
 func createFakeServerConn(t *testing.T) (*fakeMetricsServer, *grpc.ClientConn, func()) {
@@ -529,7 +529,7 @@ func createFakeServerConn(t *testing.T) (*fakeMetricsServer, *grpc.ClientConn, f
 	}
 	server := new(fakeMetricsServer)
 	srv := grpc.NewServer()
-	monitoringpb.RegisterMetricServiceServer(srv, server)
+	monitoringpb.RegisterMetricServiceServer(srv, server) //nolint: staticcheck
 	go func() {
 		_ = srv.Serve(ln)
 	}()
@@ -544,7 +544,7 @@ func createFakeServerConn(t *testing.T) (*fakeMetricsServer, *grpc.ClientConn, f
 	return server, conn, stop
 }
 
-func (server *fakeMetricsServer) forEachStackdriverTimeSeries(fn func(sdt *monitoringpb.CreateTimeSeriesRequest)) {
+func (server *fakeMetricsServer) forEachStackdriverTimeSeries(fn func(sdt *monitoringpb.CreateTimeSeriesRequest)) { //nolint: staticcheck
 	server.mu.RLock()
 	defer server.mu.RUnlock()
 
@@ -553,7 +553,7 @@ func (server *fakeMetricsServer) forEachStackdriverTimeSeries(fn func(sdt *monit
 	}
 }
 
-func (server *fakeMetricsServer) forEachServiceStackdriverTimeSeries(fn func(sdt *monitoringpb.CreateTimeSeriesRequest)) {
+func (server *fakeMetricsServer) forEachServiceStackdriverTimeSeries(fn func(sdt *monitoringpb.CreateTimeSeriesRequest)) { //nolint: staticcheck
 	server.mu.RLock()
 	defer server.mu.RUnlock()
 
@@ -562,7 +562,7 @@ func (server *fakeMetricsServer) forEachServiceStackdriverTimeSeries(fn func(sdt
 	}
 }
 
-func (server *fakeMetricsServer) forEachStackdriverMetricDescriptor(fn func(sdmd *monitoringpb.CreateMetricDescriptorRequest)) {
+func (server *fakeMetricsServer) forEachStackdriverMetricDescriptor(fn func(sdmd *monitoringpb.CreateMetricDescriptorRequest)) { //nolint: staticcheck
 	server.mu.RLock()
 	defer server.mu.RUnlock()
 
@@ -589,28 +589,28 @@ func (server *fakeMetricsServer) resetStackdriverMetricDescriptors() {
 	server.mu.Unlock()
 }
 
-func (server *fakeMetricsServer) CreateMetricDescriptor(ctx context.Context, req *monitoringpb.CreateMetricDescriptorRequest) (*googlemetricpb.MetricDescriptor, error) {
+func (server *fakeMetricsServer) CreateMetricDescriptor(ctx context.Context, req *monitoringpb.CreateMetricDescriptorRequest) (*googlemetricpb.MetricDescriptor, error) { //nolint: staticcheck
 	server.mu.Lock()
 	server.stackdriverMetricDescriptors = append(server.stackdriverMetricDescriptors, req)
 	server.mu.Unlock()
 	return req.MetricDescriptor, nil
 }
 
-func (server *fakeMetricsServer) CreateTimeSeries(ctx context.Context, req *monitoringpb.CreateTimeSeriesRequest) (*empty.Empty, error) {
+func (server *fakeMetricsServer) CreateTimeSeries(ctx context.Context, req *monitoringpb.CreateTimeSeriesRequest) (*empty.Empty, error) { //nolint: staticcheck
 	server.mu.Lock()
 	server.stackdriverTimeSeries = append(server.stackdriverTimeSeries, req)
 	server.mu.Unlock()
 	return new(empty.Empty), nil
 }
 
-func (server *fakeMetricsServer) CreateServiceTimeSeries(ctx context.Context, req *monitoringpb.CreateTimeSeriesRequest) (*empty.Empty, error) {
+func (server *fakeMetricsServer) CreateServiceTimeSeries(ctx context.Context, req *monitoringpb.CreateTimeSeriesRequest) (*empty.Empty, error) { //nolint: staticcheck
 	server.mu.Lock()
 	server.stackdriverServiceTimeSeries = append(server.stackdriverServiceTimeSeries, req)
 	server.mu.Unlock()
 	return new(empty.Empty), nil
 }
 
-func requireTimeSeriesRequestEqual(t *testing.T, got, want []*monitoringpb.CreateTimeSeriesRequest) (string, int) {
+func requireTimeSeriesRequestEqual(t *testing.T, got, want []*monitoringpb.CreateTimeSeriesRequest) (string, int) { //nolint: staticcheck
 	diff := ""
 	i := 0
 	if len(got) != len(want) {
@@ -627,7 +627,7 @@ func requireTimeSeriesRequestEqual(t *testing.T, got, want []*monitoringpb.Creat
 	return diff, i
 }
 
-func requireMetricDescriptorRequestEqual(t *testing.T, got, want []*monitoringpb.CreateMetricDescriptorRequest) (string, int) {
+func requireMetricDescriptorRequestEqual(t *testing.T, got, want []*monitoringpb.CreateMetricDescriptorRequest) (string, int) { //nolint: staticcheck
 	diff := ""
 	i := 0
 	if len(got) != len(want) {

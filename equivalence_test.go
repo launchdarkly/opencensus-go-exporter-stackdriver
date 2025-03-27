@@ -34,7 +34,7 @@ import (
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	googlemetricpb "google.golang.org/genproto/googleapis/api/metric"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
-	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
+	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3" //nolint: staticcheck
 )
 
 func TestStatsAndMetricsEquivalence(t *testing.T) {
@@ -96,7 +96,7 @@ func TestStatsAndMetricsEquivalence(t *testing.T) {
 		if err != nil {
 			t.Errorf("#%d: Stats.metricToMpbMetricDescriptor: %v", i, err)
 		}
-		sMDR := &monitoringpb.CreateMetricDescriptorRequest{
+		sMDR := &monitoringpb.CreateMetricDescriptorRequest{ //nolint: staticcheck
 			Name:             fmt.Sprintf("projects/%s", se.o.ProjectID),
 			MetricDescriptor: sMD,
 		}
@@ -104,7 +104,7 @@ func TestStatsAndMetricsEquivalence(t *testing.T) {
 		if err != nil {
 			t.Errorf("#%d: Stats.protoMetricDescriptorToMetricDescriptor: %v", i, err)
 		}
-		pMDR := &monitoringpb.CreateMetricDescriptorRequest{
+		pMDR := &monitoringpb.CreateMetricDescriptorRequest{ //nolint: staticcheck
 			Name:             fmt.Sprintf("projects/%s", se.o.ProjectID),
 			MetricDescriptor: inMD,
 		}
@@ -232,12 +232,12 @@ func TestEquivalenceStatsVsMetricsUploads(t *testing.T) {
 	se.Flush()
 
 	// Examining the stackdriver metrics that are available.
-	var stackdriverTimeSeriesFromMetrics []*monitoringpb.CreateTimeSeriesRequest
-	server.forEachStackdriverTimeSeries(func(sdt *monitoringpb.CreateTimeSeriesRequest) {
+	var stackdriverTimeSeriesFromMetrics []*monitoringpb.CreateTimeSeriesRequest          //nolint: staticcheck
+	server.forEachStackdriverTimeSeries(func(sdt *monitoringpb.CreateTimeSeriesRequest) { //nolint: staticcheck
 		stackdriverTimeSeriesFromMetrics = append(stackdriverTimeSeriesFromMetrics, sdt)
 	})
-	var stackdriverMetricDescriptorsFromMetrics []*monitoringpb.CreateMetricDescriptorRequest
-	server.forEachStackdriverMetricDescriptor(func(sdmd *monitoringpb.CreateMetricDescriptorRequest) {
+	var stackdriverMetricDescriptorsFromMetrics []*monitoringpb.CreateMetricDescriptorRequest          //nolint: staticcheck
+	server.forEachStackdriverMetricDescriptor(func(sdmd *monitoringpb.CreateMetricDescriptorRequest) { //nolint: staticcheck
 		stackdriverMetricDescriptorsFromMetrics = append(stackdriverMetricDescriptorsFromMetrics, sdmd)
 	})
 
@@ -341,12 +341,12 @@ func TestEquivalenceStatsVsMetricsUploads(t *testing.T) {
 	se.PushMetricsProto(context.Background(), nil, nil, metricPbs) //nolint: errcheck
 	se.Flush()
 
-	var stackdriverTimeSeriesFromMetricsPb []*monitoringpb.CreateTimeSeriesRequest
-	server.forEachStackdriverTimeSeries(func(sdt *monitoringpb.CreateTimeSeriesRequest) {
+	var stackdriverTimeSeriesFromMetricsPb []*monitoringpb.CreateTimeSeriesRequest        //nolint: staticcheck
+	server.forEachStackdriverTimeSeries(func(sdt *monitoringpb.CreateTimeSeriesRequest) { //nolint: staticcheck
 		stackdriverTimeSeriesFromMetricsPb = append(stackdriverTimeSeriesFromMetricsPb, sdt)
 	})
-	var stackdriverMetricDescriptorsFromMetricsPb []*monitoringpb.CreateMetricDescriptorRequest
-	server.forEachStackdriverMetricDescriptor(func(sdmd *monitoringpb.CreateMetricDescriptorRequest) {
+	var stackdriverMetricDescriptorsFromMetricsPb []*monitoringpb.CreateMetricDescriptorRequest        //nolint: staticcheck
+	server.forEachStackdriverMetricDescriptor(func(sdmd *monitoringpb.CreateMetricDescriptorRequest) { //nolint: staticcheck
 		stackdriverMetricDescriptorsFromMetricsPb = append(stackdriverMetricDescriptorsFromMetricsPb, sdmd)
 	})
 
@@ -372,9 +372,9 @@ func TestEquivalenceStatsVsMetricsUploads(t *testing.T) {
 type fakeMetricsServer struct {
 	monitoringpb.MetricServiceServer
 	mu                           sync.RWMutex
-	stackdriverTimeSeries        []*monitoringpb.CreateTimeSeriesRequest
-	stackdriverServiceTimeSeries []*monitoringpb.CreateTimeSeriesRequest
-	stackdriverMetricDescriptors []*monitoringpb.CreateMetricDescriptorRequest
+	stackdriverTimeSeries        []*monitoringpb.CreateTimeSeriesRequest       //nolint: staticcheck
+	stackdriverServiceTimeSeries []*monitoringpb.CreateTimeSeriesRequest       //nolint: staticcheck
+	stackdriverMetricDescriptors []*monitoringpb.CreateMetricDescriptorRequest //nolint: staticcheck
 }
 
 func createFakeServer(t *testing.T) (*fakeMetricsServer, string, func()) {
@@ -384,7 +384,7 @@ func createFakeServer(t *testing.T) (*fakeMetricsServer, string, func()) {
 	}
 	server := new(fakeMetricsServer)
 	srv := grpc.NewServer()
-	monitoringpb.RegisterMetricServiceServer(srv, server)
+	monitoringpb.RegisterMetricServiceServer(srv, server) //nolint: staticcheck
 	go func() {
 		_ = srv.Serve(ln)
 	}()
@@ -396,7 +396,7 @@ func createFakeServer(t *testing.T) (*fakeMetricsServer, string, func()) {
 	return server, "localhost:" + agentPortStr, stop
 }
 
-func (server *fakeMetricsServer) forEachStackdriverTimeSeries(fn func(sdt *monitoringpb.CreateTimeSeriesRequest)) {
+func (server *fakeMetricsServer) forEachStackdriverTimeSeries(fn func(sdt *monitoringpb.CreateTimeSeriesRequest)) { //nolint: staticcheck
 	server.mu.RLock()
 	defer server.mu.RUnlock()
 
@@ -405,7 +405,7 @@ func (server *fakeMetricsServer) forEachStackdriverTimeSeries(fn func(sdt *monit
 	}
 }
 
-func (server *fakeMetricsServer) forEachStackdriverMetricDescriptor(fn func(sdmd *monitoringpb.CreateMetricDescriptorRequest)) {
+func (server *fakeMetricsServer) forEachStackdriverMetricDescriptor(fn func(sdmd *monitoringpb.CreateMetricDescriptorRequest)) { //nolint: staticcheck
 	server.mu.RLock()
 	defer server.mu.RUnlock()
 
@@ -426,21 +426,21 @@ func (server *fakeMetricsServer) resetStackdriverMetricDescriptors() {
 	server.mu.Unlock()
 }
 
-func (server *fakeMetricsServer) CreateMetricDescriptor(ctx context.Context, req *monitoringpb.CreateMetricDescriptorRequest) (*googlemetricpb.MetricDescriptor, error) {
+func (server *fakeMetricsServer) CreateMetricDescriptor(ctx context.Context, req *monitoringpb.CreateMetricDescriptorRequest) (*googlemetricpb.MetricDescriptor, error) { //nolint: staticcheck
 	server.mu.Lock()
 	server.stackdriverMetricDescriptors = append(server.stackdriverMetricDescriptors, req)
 	server.mu.Unlock()
 	return req.MetricDescriptor, nil
 }
 
-func (server *fakeMetricsServer) CreateTimeSeries(ctx context.Context, req *monitoringpb.CreateTimeSeriesRequest) (*empty.Empty, error) {
+func (server *fakeMetricsServer) CreateTimeSeries(ctx context.Context, req *monitoringpb.CreateTimeSeriesRequest) (*empty.Empty, error) { //nolint: staticcheck
 	server.mu.Lock()
 	server.stackdriverTimeSeries = append(server.stackdriverTimeSeries, req)
 	server.mu.Unlock()
 	return new(empty.Empty), nil
 }
 
-func (server *fakeMetricsServer) CreateServiceTimeSeries(ctx context.Context, req *monitoringpb.CreateTimeSeriesRequest) (*empty.Empty, error) {
+func (server *fakeMetricsServer) CreateServiceTimeSeries(ctx context.Context, req *monitoringpb.CreateTimeSeriesRequest) (*empty.Empty, error) { //nolint: staticcheck
 	server.mu.Lock()
 	server.stackdriverServiceTimeSeries = append(server.stackdriverServiceTimeSeries, req)
 	server.mu.Unlock()

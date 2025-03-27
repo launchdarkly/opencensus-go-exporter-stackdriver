@@ -24,7 +24,7 @@ import (
 	tracingclient "cloud.google.com/go/trace/apiv2"
 	"go.opencensus.io/trace"
 	"google.golang.org/api/support/bundler"
-	tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2"
+	tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2" //nolint: staticcheck
 	"google.golang.org/protobuf/proto"
 
 	commonpb "github.com/census-instrumentation/opencensus-proto/gen-go/agent/common/v1"
@@ -33,13 +33,12 @@ import (
 
 // traceExporter is an implementation of trace.Exporter that uploads spans to
 // Stackdriver.
-//
 type traceExporter struct {
 	o         Options
 	projectID string
 	bundler   *bundler.Bundler
 	// uploadFn defaults to uploadSpans; it can be replaced for tests.
-	uploadFn func(spans []*tracepb.Span)
+	uploadFn func(spans []*tracepb.Span) //nolint: staticcheck
 	overflowLogger
 	client *tracingclient.Client
 }
@@ -66,8 +65,8 @@ func newTraceExporterWithClient(o Options, c *tracingclient.Client) *traceExport
 		client:    c,
 		o:         o,
 	}
-	b := bundler.NewBundler((*tracepb.Span)(nil), func(bundle interface{}) {
-		e.uploadFn(bundle.([]*tracepb.Span))
+	b := bundler.NewBundler((*tracepb.Span)(nil), func(bundle interface{}) { //nolint: staticcheck
+		e.uploadFn(bundle.([]*tracepb.Span)) //nolint: staticcheck
 	})
 	if o.BundleDelayThreshold > 0 {
 		b.DelayThreshold = o.BundleDelayThreshold
@@ -124,7 +123,7 @@ func (e *traceExporter) close() error {
 	return e.client.Close()
 }
 
-func (e *traceExporter) pushTraceSpans(ctx context.Context, node *commonpb.Node, r *resourcepb.Resource, spans []*trace.SpanData) (int, error) {
+func (e *traceExporter) pushTraceSpans(ctx context.Context, node *commonpb.Node, r *resourcepb.Resource, spans []*trace.SpanData) (int, error) { //nolint: staticcheck
 	ctx, span := trace.StartSpan(
 		ctx,
 		"github.com/launchdarkly/opencensus-go-exporter-stackdriver.PushTraceSpans",
@@ -133,7 +132,7 @@ func (e *traceExporter) pushTraceSpans(ctx context.Context, node *commonpb.Node,
 	defer span.End()
 	span.AddAttributes(trace.Int64Attribute("num_spans", int64(len(spans))))
 
-	protoSpans := make([]*tracepb.Span, 0, len(spans))
+	protoSpans := make([]*tracepb.Span, 0, len(spans)) //nolint: staticcheck
 
 	res := e.o.Resource
 	if r != nil {
@@ -144,7 +143,7 @@ func (e *traceExporter) pushTraceSpans(ctx context.Context, node *commonpb.Node,
 		protoSpans = append(protoSpans, protoFromSpanData(span, e.projectID, res, e.o.UserAgent))
 	}
 
-	req := tracepb.BatchWriteSpansRequest{
+	req := tracepb.BatchWriteSpansRequest{ //nolint: staticcheck
 		Name:  "projects/" + e.projectID,
 		Spans: protoSpans,
 	}
@@ -161,8 +160,8 @@ func (e *traceExporter) pushTraceSpans(ctx context.Context, node *commonpb.Node,
 }
 
 // uploadSpans uploads a set of spans to Stackdriver.
-func (e *traceExporter) uploadSpans(spans []*tracepb.Span) {
-	req := tracepb.BatchWriteSpansRequest{
+func (e *traceExporter) uploadSpans(spans []*tracepb.Span) { //nolint: staticcheck
+	req := tracepb.BatchWriteSpansRequest{ //nolint: staticcheck
 		Name:  "projects/" + e.projectID,
 		Spans: spans,
 	}

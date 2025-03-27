@@ -28,7 +28,7 @@ import (
 	wrapperspb "github.com/golang/protobuf/ptypes/wrappers"
 	"go.opencensus.io/trace"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
-	tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2"
+	tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2" //nolint: staticcheck
 	codepb "google.golang.org/genproto/googleapis/rpc/code"
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 	"google.golang.org/protobuf/encoding/prototext"
@@ -39,7 +39,7 @@ var (
 	spanID  = trace.SpanID{0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1}
 )
 
-type spans []*tracepb.Span
+type spans []*tracepb.Span //nolint: staticcheck
 
 func (s spans) Len() int           { return len(s) }
 func (s spans) Less(x, y int) bool { return s[x].DisplayName.Value < s[y].DisplayName.Value }
@@ -111,28 +111,28 @@ func generateSpan() {
 func createExpectedSpans() spans {
 	ua := trunc(defaultUserAgent, len(defaultUserAgent))
 	expectedSpans := spans{
-		&tracepb.Span{
+		&tracepb.Span{ //nolint: staticcheck
 			DisplayName:             trunc("span0", 128),
 			SameProcessAsParentSpan: &wrapperspb.BoolValue{Value: false},
-			Attributes: &tracepb.Span_Attributes{
-				AttributeMap: map[string]*tracepb.AttributeValue{
+			Attributes: &tracepb.Span_Attributes{ //nolint: staticcheck
+				AttributeMap: map[string]*tracepb.AttributeValue{ //nolint: staticcheck
 					agentLabel: {Value: &tracepb.AttributeValue_StringValue{StringValue: ua}},
 				},
 			},
 		},
-		&tracepb.Span{
+		&tracepb.Span{ //nolint: staticcheck
 			DisplayName:             trunc("span1", 128),
 			SameProcessAsParentSpan: &wrapperspb.BoolValue{Value: true},
-			Attributes: &tracepb.Span_Attributes{
-				AttributeMap: map[string]*tracepb.AttributeValue{
+			Attributes: &tracepb.Span_Attributes{ //nolint: staticcheck
+				AttributeMap: map[string]*tracepb.AttributeValue{ //nolint: staticcheck
 					agentLabel: {Value: &tracepb.AttributeValue_StringValue{StringValue: ua}},
 				},
 			},
 		},
-		&tracepb.Span{
+		&tracepb.Span{ //nolint: staticcheck
 			DisplayName: trunc("span2", 128),
-			Attributes: &tracepb.Span_Attributes{
-				AttributeMap: map[string]*tracepb.AttributeValue{
+			Attributes: &tracepb.Span_Attributes{ //nolint: staticcheck
+				AttributeMap: map[string]*tracepb.AttributeValue{ //nolint: staticcheck
 					"key2": {Value: &tracepb.AttributeValue_StringValue{StringValue: trunc("value2", 256)}},
 					"key1": {Value: &tracepb.AttributeValue_IntValue{IntValue: 100}},
 					// TODO [rghetia]: uncomment the test case after go.opencensus.io/trace@v0.20.0 is released.
@@ -140,26 +140,26 @@ func createExpectedSpans() spans {
 					agentLabel: {Value: &tracepb.AttributeValue_StringValue{StringValue: trunc("custom-agent", 256)}},
 				},
 			},
-			TimeEvents: &tracepb.Span_TimeEvents{
-				TimeEvent: []*tracepb.Span_TimeEvent{
+			TimeEvents: &tracepb.Span_TimeEvents{ //nolint: staticcheck
+				TimeEvent: []*tracepb.Span_TimeEvent{ //nolint: staticcheck
 					{
 						Value: &tracepb.Span_TimeEvent_Annotation_{
-							Annotation: &tracepb.Span_TimeEvent_Annotation{
+							Annotation: &tracepb.Span_TimeEvent_Annotation{ //nolint: staticcheck
 								Description: trunc("in span2", 256),
 							},
 						},
 					},
 					{
 						Value: &tracepb.Span_TimeEvent_Annotation_{
-							Annotation: &tracepb.Span_TimeEvent_Annotation{
+							Annotation: &tracepb.Span_TimeEvent_Annotation{ //nolint: staticcheck
 								Description: trunc("1/2", 256),
 							},
 						},
 					},
 					{
 						Value: &tracepb.Span_TimeEvent_MessageEvent_{
-							MessageEvent: &tracepb.Span_TimeEvent_MessageEvent{
-								Type:                  tracepb.Span_TimeEvent_MessageEvent_SENT,
+							MessageEvent: &tracepb.Span_TimeEvent_MessageEvent{ //nolint: staticcheck
+								Type:                  tracepb.Span_TimeEvent_MessageEvent_SENT, //nolint: staticcheck
 								Id:                    0x123,
 								UncompressedSizeBytes: 1024,
 								CompressedSizeBytes:   512,
@@ -170,26 +170,26 @@ func createExpectedSpans() spans {
 			},
 			SameProcessAsParentSpan: &wrapperspb.BoolValue{Value: true},
 		},
-		&tracepb.Span{
+		&tracepb.Span{ //nolint: staticcheck
 			DisplayName: trunc("span3", 128),
-			Attributes: &tracepb.Span_Attributes{
-				AttributeMap: map[string]*tracepb.AttributeValue{
+			Attributes: &tracepb.Span_Attributes{ //nolint: staticcheck
+				AttributeMap: map[string]*tracepb.AttributeValue{ //nolint: staticcheck
 					agentLabel: {Value: &tracepb.AttributeValue_StringValue{StringValue: ua}},
 				},
 			},
-			TimeEvents: &tracepb.Span_TimeEvents{
-				TimeEvent: []*tracepb.Span_TimeEvent{
+			TimeEvents: &tracepb.Span_TimeEvents{ //nolint: staticcheck
+				TimeEvent: []*tracepb.Span_TimeEvent{ //nolint: staticcheck
 					{
 						Value: &tracepb.Span_TimeEvent_Annotation_{
-							Annotation: &tracepb.Span_TimeEvent_Annotation{
+							Annotation: &tracepb.Span_TimeEvent_Annotation{ //nolint: staticcheck
 								Description: trunc("in span3", 256),
 							},
 						},
 					},
 					{
 						Value: &tracepb.Span_TimeEvent_MessageEvent_{
-							MessageEvent: &tracepb.Span_TimeEvent_MessageEvent{
-								Type:                  tracepb.Span_TimeEvent_MessageEvent_RECEIVED,
+							MessageEvent: &tracepb.Span_TimeEvent_MessageEvent{ //nolint: staticcheck
+								Type:                  tracepb.Span_TimeEvent_MessageEvent_RECEIVED, //nolint: staticcheck
 								Id:                    0x456,
 								UncompressedSizeBytes: 2048,
 								CompressedSizeBytes:   1536,
@@ -203,21 +203,21 @@ func createExpectedSpans() spans {
 			},
 			SameProcessAsParentSpan: &wrapperspb.BoolValue{Value: true},
 		},
-		&tracepb.Span{
+		&tracepb.Span{ //nolint: staticcheck
 			DisplayName: trunc("span4", 128),
-			Attributes: &tracepb.Span_Attributes{
-				AttributeMap: map[string]*tracepb.AttributeValue{
+			Attributes: &tracepb.Span_Attributes{ //nolint: staticcheck
+				AttributeMap: map[string]*tracepb.AttributeValue{ //nolint: staticcheck
 					agentLabel: {Value: &tracepb.AttributeValue_StringValue{StringValue: ua}},
 				},
 			},
-			TimeEvents: &tracepb.Span_TimeEvents{
-				TimeEvent: []*tracepb.Span_TimeEvent{
+			TimeEvents: &tracepb.Span_TimeEvents{ //nolint: staticcheck
+				TimeEvent: []*tracepb.Span_TimeEvent{ //nolint: staticcheck
 					{
 						Value: &tracepb.Span_TimeEvent_Annotation_{
-							Annotation: &tracepb.Span_TimeEvent_Annotation{
+							Annotation: &tracepb.Span_TimeEvent_Annotation{ //nolint: staticcheck
 								Description: trunc("1/2", 256),
-								Attributes: &tracepb.Span_Attributes{
-									AttributeMap: map[string]*tracepb.AttributeValue{
+								Attributes: &tracepb.Span_Attributes{ //nolint: staticcheck
+									AttributeMap: map[string]*tracepb.AttributeValue{ //nolint: staticcheck
 										"k1": {Value: &tracepb.AttributeValue_StringValue{StringValue: trunc("v1", 256)}},
 									},
 								},
@@ -226,10 +226,10 @@ func createExpectedSpans() spans {
 					},
 					{
 						Value: &tracepb.Span_TimeEvent_Annotation_{
-							Annotation: &tracepb.Span_TimeEvent_Annotation{
+							Annotation: &tracepb.Span_TimeEvent_Annotation{ //nolint: staticcheck
 								Description: trunc("foo 42", 256),
-								Attributes: &tracepb.Span_Attributes{
-									AttributeMap: map[string]*tracepb.AttributeValue{
+								Attributes: &tracepb.Span_Attributes{ //nolint: staticcheck
+									AttributeMap: map[string]*tracepb.AttributeValue{ //nolint: staticcheck
 										"k2": {Value: &tracepb.AttributeValue_StringValue{StringValue: trunc("v2", 256)}},
 									},
 								},
@@ -238,10 +238,10 @@ func createExpectedSpans() spans {
 					},
 					{
 						Value: &tracepb.Span_TimeEvent_Annotation_{
-							Annotation: &tracepb.Span_TimeEvent_Annotation{
+							Annotation: &tracepb.Span_TimeEvent_Annotation{ //nolint: staticcheck
 								Description: trunc("in span4", 256),
-								Attributes: &tracepb.Span_Attributes{
-									AttributeMap: map[string]*tracepb.AttributeValue{
+								Attributes: &tracepb.Span_Attributes{ //nolint: staticcheck
+									AttributeMap: map[string]*tracepb.AttributeValue{ //nolint: staticcheck
 										"k3": {Value: &tracepb.AttributeValue_StringValue{StringValue: trunc("v3", 256)}},
 									},
 								},
@@ -250,14 +250,14 @@ func createExpectedSpans() spans {
 					},
 				},
 			},
-			Links: &tracepb.Span_Links{
-				Link: []*tracepb.Span_Link{
+			Links: &tracepb.Span_Links{ //nolint: staticcheck
+				Link: []*tracepb.Span_Link{ //nolint: staticcheck
 					{
 						TraceId: "01020000000000000000000000000000",
 						SpanId:  "0300000000000000",
-						Type:    tracepb.Span_Link_PARENT_LINKED_SPAN,
-						Attributes: &tracepb.Span_Attributes{
-							AttributeMap: map[string]*tracepb.AttributeValue{
+						Type:    tracepb.Span_Link_PARENT_LINKED_SPAN, //nolint: staticcheck
+						Attributes: &tracepb.Span_Attributes{ //nolint: staticcheck
+							AttributeMap: map[string]*tracepb.AttributeValue{ //nolint: staticcheck
 								"k4": {Value: &tracepb.AttributeValue_StringValue{StringValue: trunc("v4", 256)}},
 							},
 						},
@@ -341,7 +341,7 @@ func TestExportTrace(t *testing.T) {
 	}
 }
 
-func checkExepectedMonitoredResourceKV(k string, v string, spb *tracepb.Span, t *testing.T) {
+func checkExepectedMonitoredResourceKV(k string, v string, spb *tracepb.Span, t *testing.T) { //nolint: staticcheck
 	found := spb.Attributes.AttributeMap[k].GetStringValue().GetValue()
 	if found != v {
 		t.Errorf("Monitored Resource Attributes: got %s want %s for attribute %s", found, v, k)
@@ -449,11 +449,11 @@ func TestExportTraceWithMonitoredResource(t *testing.T) {
 func TestEnums(t *testing.T) {
 	for _, test := range []struct {
 		x trace.LinkType
-		y tracepb.Span_Link_Type
+		y tracepb.Span_Link_Type //nolint: staticcheck
 	}{
-		{trace.LinkTypeUnspecified, tracepb.Span_Link_TYPE_UNSPECIFIED},
-		{trace.LinkTypeChild, tracepb.Span_Link_CHILD_LINKED_SPAN},
-		{trace.LinkTypeParent, tracepb.Span_Link_PARENT_LINKED_SPAN},
+		{trace.LinkTypeUnspecified, tracepb.Span_Link_TYPE_UNSPECIFIED}, //nolint: staticcheck
+		{trace.LinkTypeChild, tracepb.Span_Link_CHILD_LINKED_SPAN},      //nolint: staticcheck
+		{trace.LinkTypeParent, tracepb.Span_Link_PARENT_LINKED_SPAN},    //nolint: staticcheck
 	} {
 		if test.x != trace.LinkType(test.y) {
 			t.Errorf("got link type values %d and %d, want equal", test.x, test.y)
@@ -462,11 +462,11 @@ func TestEnums(t *testing.T) {
 
 	for _, test := range []struct {
 		x trace.MessageEventType
-		y tracepb.Span_TimeEvent_MessageEvent_Type
+		y tracepb.Span_TimeEvent_MessageEvent_Type //nolint: staticcheck
 	}{
-		{trace.MessageEventTypeUnspecified, tracepb.Span_TimeEvent_MessageEvent_TYPE_UNSPECIFIED},
-		{trace.MessageEventTypeSent, tracepb.Span_TimeEvent_MessageEvent_SENT},
-		{trace.MessageEventTypeRecv, tracepb.Span_TimeEvent_MessageEvent_RECEIVED},
+		{trace.MessageEventTypeUnspecified, tracepb.Span_TimeEvent_MessageEvent_TYPE_UNSPECIFIED}, //nolint: staticcheck
+		{trace.MessageEventTypeSent, tracepb.Span_TimeEvent_MessageEvent_SENT},                    //nolint: staticcheck
+		{trace.MessageEventTypeRecv, tracepb.Span_TimeEvent_MessageEvent_RECEIVED},                //nolint: staticcheck
 	} {
 		if test.x != trace.MessageEventType(test.y) {
 			t.Errorf("got network event type values %d and %d, want equal", test.x, test.y)

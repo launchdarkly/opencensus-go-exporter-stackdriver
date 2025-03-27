@@ -22,7 +22,7 @@ import (
 	"time"
 
 	"go.opencensus.io/trace"
-	tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2"
+	tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2" //nolint: staticcheck
 )
 
 func TestBundling(t *testing.T) {
@@ -32,8 +32,8 @@ func TestBundling(t *testing.T) {
 		BundleCountThreshold: 10,
 	}, nil)
 
-	ch := make(chan []*tracepb.Span)
-	exporter.uploadFn = func(spans []*tracepb.Span) {
+	ch := make(chan []*tracepb.Span)                  //nolint: staticcheck
+	exporter.uploadFn = func(spans []*tracepb.Span) { //nolint: staticcheck
 		ch <- spans
 	}
 	trace.RegisterExporter(exporter)
@@ -79,8 +79,8 @@ func TestBundling_ConcurrentExports(t *testing.T) {
 	waitCh := make(chan struct{})
 	wg.Add(workers)
 
-	var exportMap sync.Map // maintain a collection of the spans exported
-	exporter.uploadFn = func(spans []*tracepb.Span) {
+	var exportMap sync.Map                            // maintain a collection of the spans exported
+	exporter.uploadFn = func(spans []*tracepb.Span) { //nolint: staticcheck
 		for _, s := range spans {
 			exportMap.Store(s.SpanId, true)
 		}
@@ -151,7 +151,7 @@ func TestTraceSpansBufferMaxBytes(t *testing.T) {
 	}, nil)
 	waitCh := make(chan struct{})
 	exported := 0
-	e.uploadFn = func(spans []*tracepb.Span) {
+	e.uploadFn = func(spans []*tracepb.Span) { //nolint: staticcheck
 		<-waitCh
 		exported++
 	}
@@ -174,7 +174,7 @@ func TestTraceSpansUserAgent(t *testing.T) {
 
 	var got string
 	// set user-agent attribute based on provided option
-	e.uploadFn = func(spans []*tracepb.Span) {
+	e.uploadFn = func(spans []*tracepb.Span) { //nolint: staticcheck
 		got = spans[0].Attributes.AttributeMap[agentLabel].GetStringValue().Value
 	}
 	e.ExportSpan(makeSampleSpanData(""))
@@ -184,7 +184,7 @@ func TestTraceSpansUserAgent(t *testing.T) {
 	}
 
 	// if user-agent is already set, do not override
-	e.uploadFn = func(spans []*tracepb.Span) {
+	e.uploadFn = func(spans []*tracepb.Span) { //nolint: staticcheck
 		got = spans[0].Attributes.AttributeMap[agentLabel].GetStringValue().Value
 	}
 	e.ExportSpan(makeSampleSpanData("My Test Application"))

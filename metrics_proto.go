@@ -38,7 +38,7 @@ import (
 	labelpb "google.golang.org/genproto/googleapis/api/label"
 	googlemetricpb "google.golang.org/genproto/googleapis/api/metric"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
-	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
+	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3" //nolint: staticcheck
 )
 
 var errNilMetricOrMetricDescriptor = errors.New("non-nil metric or metric descriptor")
@@ -265,7 +265,7 @@ func (se *statsExporter) protoMetricToTimeSeries(ctx context.Context, mappedRsc 
 			mb.recordDroppedTimeseries(1, err)
 			continue
 		}
-		mb.addTimeSeries(&monitoringpb.TimeSeries{
+		mb.addTimeSeries(&monitoringpb.TimeSeries{ //nolint: staticcheck
 			Metric: &googlemetricpb.Metric{
 				Type:   metricType,
 				Labels: labels,
@@ -342,8 +342,8 @@ func (se *statsExporter) createMetricDescriptorFromMetricProto(ctx context.Conte
 	return nil
 }
 
-func (se *statsExporter) protoTimeSeriesToMonitoringPoints(ts *metricspb.TimeSeries, metricKind googlemetricpb.MetricDescriptor_MetricKind) ([]*monitoringpb.Point, error) {
-	sptl := make([]*monitoringpb.Point, 0, len(ts.Points))
+func (se *statsExporter) protoTimeSeriesToMonitoringPoints(ts *metricspb.TimeSeries, metricKind googlemetricpb.MetricDescriptor_MetricKind) ([]*monitoringpb.Point, error) { //nolint: staticcheck
+	sptl := make([]*monitoringpb.Point, 0, len(ts.Points)) //nolint: staticcheck
 	for _, pt := range ts.Points {
 		// If we have a last value aggregation point i.e. MetricDescriptor_GAUGE
 		// StartTime should be nil.
@@ -435,7 +435,7 @@ func hasDomain(name string) bool {
 	return false
 }
 
-func fromProtoPoint(startTime *timestamppb.Timestamp, pt *metricspb.Point) (*monitoringpb.Point, error) {
+func fromProtoPoint(startTime *timestamppb.Timestamp, pt *metricspb.Point) (*monitoringpb.Point, error) { //nolint: staticcheck
 	if pt == nil {
 		return nil, nil
 	}
@@ -446,7 +446,7 @@ func fromProtoPoint(startTime *timestamppb.Timestamp, pt *metricspb.Point) (*mon
 	}
 
 	endTime := pt.Timestamp
-	interval := &monitoringpb.TimeInterval{
+	interval := &monitoringpb.TimeInterval{ //nolint: staticcheck
 		StartTime: startTime,
 		EndTime:   endTime,
 	}
@@ -454,13 +454,13 @@ func fromProtoPoint(startTime *timestamppb.Timestamp, pt *metricspb.Point) (*mon
 		interval = toValidTimeIntervalpb(startTime.AsTime(), endTime.AsTime())
 	}
 
-	return &monitoringpb.Point{
+	return &monitoringpb.Point{ //nolint: staticcheck
 		Value:    mptv,
 		Interval: interval,
 	}, nil
 }
 
-func protoToMetricPoint(value interface{}) (*monitoringpb.TypedValue, error) {
+func protoToMetricPoint(value interface{}) (*monitoringpb.TypedValue, error) { //nolint: staticcheck
 	if value == nil {
 		return nil, nil
 	}
@@ -487,7 +487,7 @@ func protoToMetricPoint(value interface{}) (*monitoringpb.TypedValue, error) {
 		if isStaleInt64(v.Int64Value) {
 			return nil, nil
 		}
-		return &monitoringpb.TypedValue{
+		return &monitoringpb.TypedValue{ //nolint: staticcheck
 			Value: &monitoringpb.TypedValue_Int64Value{
 				Int64Value: v.Int64Value,
 			},
@@ -497,7 +497,7 @@ func protoToMetricPoint(value interface{}) (*monitoringpb.TypedValue, error) {
 		if promvalue.IsStaleNaN(v.DoubleValue) {
 			return nil, nil
 		}
-		return &monitoringpb.TypedValue{
+		return &monitoringpb.TypedValue{ //nolint: staticcheck
 			Value: &monitoringpb.TypedValue_DoubleValue{
 				DoubleValue: v.DoubleValue,
 			},
@@ -542,7 +542,7 @@ func protoToMetricPoint(value interface{}) (*monitoringpb.TypedValue, error) {
 			mv.DistributionValue.BucketCounts = addZeroBucketCountOnCondition(insertZeroBound, bucketCounts(dv.Buckets)...)
 
 		}
-		return &monitoringpb.TypedValue{Value: mv}, nil
+		return &monitoringpb.TypedValue{Value: mv}, nil //nolint: staticcheck
 	}
 }
 

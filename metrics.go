@@ -33,7 +33,7 @@ import (
 	labelpb "google.golang.org/genproto/googleapis/api/label"
 	googlemetricpb "google.golang.org/genproto/googleapis/api/metric"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
-	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
+	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3" //nolint: staticcheck
 
 	"github.com/launchdarkly/opencensus-go-exporter-stackdriver/monitoredresource"
 	"go.opencensus.io/metric/metricdata"
@@ -91,7 +91,7 @@ func (se *statsExporter) uploadMetrics(metrics []*metricdata.Metric) error {
 		}
 	}
 
-	var allTimeSeries []*monitoringpb.TimeSeries
+	var allTimeSeries []*monitoringpb.TimeSeries //nolint: staticcheck
 	for _, metric := range metrics {
 		tsl, err := se.metricToMpbTs(ctx, metric)
 		if err != nil {
@@ -148,7 +148,7 @@ func (se *statsExporter) uploadMetrics(metrics []*metricdata.Metric) error {
 
 // metricToMpbTs converts a metric into a list of Stackdriver Monitoring v3 API TimeSeries
 // but it doesn't invoke any remote API.
-func (se *statsExporter) metricToMpbTs(ctx context.Context, metric *metricdata.Metric) ([]*monitoringpb.TimeSeries, error) {
+func (se *statsExporter) metricToMpbTs(ctx context.Context, metric *metricdata.Metric) ([]*monitoringpb.TimeSeries, error) { //nolint: staticcheck
 	if metric == nil {
 		return nil, errNilMetricOrMetricDescriptor
 	}
@@ -165,7 +165,7 @@ func (se *statsExporter) metricToMpbTs(ctx context.Context, metric *metricdata.M
 		return nil, nil
 	}
 
-	timeSeries := make([]*monitoringpb.TimeSeries, 0, len(metric.TimeSeries))
+	timeSeries := make([]*monitoringpb.TimeSeries, 0, len(metric.TimeSeries)) //nolint: staticcheck
 	for _, ts := range metric.TimeSeries {
 		sdPoints, err := se.metricTsToMpbPoint(ts, metricKind)
 		if err != nil {
@@ -194,7 +194,7 @@ func (se *statsExporter) metricToMpbTs(ctx context.Context, metric *metricdata.M
 		} else {
 			rsc = resource
 		}
-		timeSeries = append(timeSeries, &monitoringpb.TimeSeries{
+		timeSeries = append(timeSeries, &monitoringpb.TimeSeries{ //nolint: staticcheck
 			Metric: &googlemetricpb.Metric{
 				Type:   metricType,
 				Labels: labels,
@@ -377,7 +377,7 @@ func (se *statsExporter) metricRscToMpbRsc(rs *resource.Resource) *monitoredresp
 	return mrsp
 }
 
-func (se *statsExporter) metricTsToMpbPoint(ts *metricdata.TimeSeries, metricKind googlemetricpb.MetricDescriptor_MetricKind) (sptl []*monitoringpb.Point, err error) {
+func (se *statsExporter) metricTsToMpbPoint(ts *metricdata.TimeSeries, metricKind googlemetricpb.MetricDescriptor_MetricKind) (sptl []*monitoringpb.Point, err error) { //nolint: staticcheck
 	for _, pt := range ts.Points {
 
 		// If we have a last value aggregation point i.e. MetricDescriptor_GAUGE
@@ -396,7 +396,7 @@ func (se *statsExporter) metricTsToMpbPoint(ts *metricdata.TimeSeries, metricKin
 	return sptl, nil
 }
 
-func metricPointToMpbPoint(startTime *timestamp.Timestamp, pt *metricdata.Point, projectID string) (*monitoringpb.Point, error) {
+func metricPointToMpbPoint(startTime *timestamp.Timestamp, pt *metricdata.Point, projectID string) (*monitoringpb.Point, error) { //nolint: staticcheck
 	if pt == nil {
 		return nil, nil
 	}
@@ -406,9 +406,9 @@ func metricPointToMpbPoint(startTime *timestamp.Timestamp, pt *metricdata.Point,
 		return nil, err
 	}
 
-	mpt := &monitoringpb.Point{
+	mpt := &monitoringpb.Point{ //nolint: staticcheck
 		Value: mptv,
-		Interval: &monitoringpb.TimeInterval{
+		Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 			StartTime: startTime,
 			EndTime:   timestampProto(pt.Time),
 		},
@@ -416,26 +416,26 @@ func metricPointToMpbPoint(startTime *timestamp.Timestamp, pt *metricdata.Point,
 	return mpt, nil
 }
 
-func metricPointToMpbValue(pt *metricdata.Point, projectID string) (*monitoringpb.TypedValue, error) {
+func metricPointToMpbValue(pt *metricdata.Point, projectID string) (*monitoringpb.TypedValue, error) { //nolint: staticcheck
 	if pt == nil {
 		return nil, nil
 	}
 
 	var err error
-	var tval *monitoringpb.TypedValue
+	var tval *monitoringpb.TypedValue //nolint: staticcheck
 	switch v := pt.Value.(type) {
 	default:
 		err = fmt.Errorf("protoToMetricPoint: unknown Data type: %T", pt.Value)
 
 	case int64:
-		tval = &monitoringpb.TypedValue{
+		tval = &monitoringpb.TypedValue{ //nolint: staticcheck
 			Value: &monitoringpb.TypedValue_Int64Value{
 				Int64Value: v,
 			},
 		}
 
 	case float64:
-		tval = &monitoringpb.TypedValue{
+		tval = &monitoringpb.TypedValue{ //nolint: staticcheck
 			Value: &monitoringpb.TypedValue_DoubleValue{
 				DoubleValue: v,
 			},
@@ -474,7 +474,7 @@ func metricPointToMpbValue(pt *metricdata.Point, projectID string) (*monitoringp
 		mv.DistributionValue.BucketCounts = addZeroBucketCountOnCondition(insertZeroBound, bucketCounts...)
 		mv.DistributionValue.Exemplars = exemplars
 
-		tval = &monitoringpb.TypedValue{Value: mv}
+		tval = &monitoringpb.TypedValue{Value: mv} //nolint: staticcheck
 	}
 
 	return tval, err
@@ -523,7 +523,7 @@ func toPbStringAttachment(v interface{}) *any.Any {
 }
 
 func toPbSpanCtxAttachment(spanCtx trace.SpanContext, projectID string) *any.Any {
-	pbSpanCtx := monitoringpb.SpanContext{
+	pbSpanCtx := monitoringpb.SpanContext{ //nolint: staticcheck
 		SpanName: fmt.Sprintf("projects/%s/traces/%s/spans/%s", projectID, spanCtx.TraceID.String(), spanCtx.SpanID.String()),
 	}
 	bytes, _ := proto.Marshal(&pbSpanCtx)

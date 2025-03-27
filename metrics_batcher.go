@@ -24,7 +24,7 @@ import (
 	"time"
 
 	monitoring "cloud.google.com/go/monitoring/apiv3/v2"
-	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
+	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3" //nolint: staticcheck
 )
 
 const (
@@ -34,7 +34,7 @@ const (
 
 type metricsBatcher struct {
 	projectName string
-	allTss      []*monitoringpb.TimeSeries
+	allTss      []*monitoringpb.TimeSeries //nolint: staticcheck
 	allErrs     []error
 
 	// Counts all dropped TimeSeries by this metricsBatcher.
@@ -42,7 +42,7 @@ type metricsBatcher struct {
 
 	workers []*worker
 	// reqsChan, respsChan and wg are shared between metricsBatcher and worker goroutines.
-	reqsChan  chan *monitoringpb.CreateTimeSeriesRequest
+	reqsChan  chan *monitoringpb.CreateTimeSeriesRequest //nolint: staticcheck
 	respsChan chan *response
 	wg        *sync.WaitGroup
 }
@@ -56,7 +56,7 @@ func newMetricsBatcher(ctx context.Context, projectID string, numWorkers int, mc
 	if reqsChanSize < minReqsChanSize {
 		reqsChanSize = minReqsChanSize
 	}
-	reqsChan := make(chan *monitoringpb.CreateTimeSeriesRequest, reqsChanSize)
+	reqsChan := make(chan *monitoringpb.CreateTimeSeriesRequest, reqsChanSize) //nolint: staticcheck
 	respsChan := make(chan *response, numWorkers)
 	var wg sync.WaitGroup
 	wg.Add(numWorkers)
@@ -67,7 +67,7 @@ func newMetricsBatcher(ctx context.Context, projectID string, numWorkers int, mc
 	}
 	return &metricsBatcher{
 		projectName:       fmt.Sprintf("projects/%s", projectID),
-		allTss:            make([]*monitoringpb.TimeSeries, 0, maxTimeSeriesPerUpload),
+		allTss:            make([]*monitoringpb.TimeSeries, 0, maxTimeSeriesPerUpload), //nolint: staticcheck
 		droppedTimeSeries: 0,
 		workers:           workers,
 		wg:                &wg,
@@ -85,11 +85,11 @@ func (mb *metricsBatcher) recordDroppedTimeseries(numTimeSeries int, errs ...err
 	}
 }
 
-func (mb *metricsBatcher) addTimeSeries(ts *monitoringpb.TimeSeries) {
+func (mb *metricsBatcher) addTimeSeries(ts *monitoringpb.TimeSeries) { //nolint: staticcheck
 	mb.allTss = append(mb.allTss, ts)
 	if len(mb.allTss) == maxTimeSeriesPerUpload {
 		mb.sendReqToChan()
-		mb.allTss = make([]*monitoringpb.TimeSeries, 0, maxTimeSeriesPerUpload)
+		mb.allTss = make([]*monitoringpb.TimeSeries, 0, maxTimeSeriesPerUpload) //nolint: staticcheck
 	}
 }
 
@@ -126,7 +126,7 @@ func (mb *metricsBatcher) close(ctx context.Context) error {
 // sendReqToChan grabs all the timeseies in this metricsBatcher, puts them
 // to a CreateTimeSeriesRequest and sends the request to reqsChan.
 func (mb *metricsBatcher) sendReqToChan() {
-	req := &monitoringpb.CreateTimeSeriesRequest{
+	req := &monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 		Name:       mb.projectName,
 		TimeSeries: mb.allTss,
 	}
@@ -138,7 +138,7 @@ var timeSeriesErrRegex = regexp.MustCompile(`: timeSeries\[([0-9]+(?:-[0-9]+)?(?
 
 // sendReq sends create time series requests to Stackdriver,
 // and returns the count of dropped time series and error.
-func sendReq(ctx context.Context, c *monitoring.MetricClient, req *monitoringpb.CreateTimeSeriesRequest) (int, []error) {
+func sendReq(ctx context.Context, c *monitoring.MetricClient, req *monitoringpb.CreateTimeSeriesRequest) (int, []error) { //nolint: staticcheck
 	// c == nil only happens in unit tests where we don't make real calls to Stackdriver server
 	if c == nil {
 		return 0, nil
@@ -164,7 +164,7 @@ func sendReq(ctx context.Context, c *monitoring.MetricClient, req *monitoringpb.
 	return dropped, errors
 }
 
-func droppedTimeSeriesFromMonitoringAPIError(req *monitoringpb.CreateTimeSeriesRequest, monitoringAPIerr error) int {
+func droppedTimeSeriesFromMonitoringAPIError(req *monitoringpb.CreateTimeSeriesRequest, monitoringAPIerr error) int { //nolint: staticcheck
 	droppedTimeSeriesRangeMatches := timeSeriesErrRegex.FindAllStringSubmatch(monitoringAPIerr.Error(), -1)
 	if !strings.HasPrefix(monitoringAPIerr.Error(), "One or more TimeSeries could not be written:") || len(droppedTimeSeriesRangeMatches) == 0 {
 		return len(req.TimeSeries)
@@ -198,7 +198,7 @@ type worker struct {
 	resp *response
 
 	respsChan chan *response
-	reqsChan  chan *monitoringpb.CreateTimeSeriesRequest
+	reqsChan  chan *monitoringpb.CreateTimeSeriesRequest //nolint: staticcheck
 
 	wg *sync.WaitGroup
 }
@@ -206,7 +206,7 @@ type worker struct {
 func newWorker(
 	ctx context.Context,
 	mc *monitoring.MetricClient,
-	reqsChan chan *monitoringpb.CreateTimeSeriesRequest,
+	reqsChan chan *monitoringpb.CreateTimeSeriesRequest, //nolint: staticcheck
 	respsChan chan *response,
 	wg *sync.WaitGroup,
 	timeout time.Duration) *worker {
@@ -228,7 +228,7 @@ func (w *worker) start() {
 	w.wg.Done()
 }
 
-func (w *worker) sendReqWithTimeout(req *monitoringpb.CreateTimeSeriesRequest) {
+func (w *worker) sendReqWithTimeout(req *monitoringpb.CreateTimeSeriesRequest) { //nolint: staticcheck
 	ctx, cancel := newContextWithTimeout(w.ctx, w.timeout)
 	defer cancel()
 
