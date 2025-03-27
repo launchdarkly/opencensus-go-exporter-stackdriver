@@ -26,7 +26,7 @@ import (
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/trace"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
-	tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2"
+	tracepb "google.golang.org/genproto/googleapis/devtools/cloudtrace/v2" //nolint: staticcheck
 	statuspb "google.golang.org/genproto/googleapis/rpc/status"
 )
 
@@ -44,7 +44,7 @@ const (
 )
 
 // proto returns a protocol buffer representation of a SpanData.
-func protoFromSpanData(s *trace.SpanData, projectID string, mr *monitoredrespb.MonitoredResource, userAgent string) *tracepb.Span {
+func protoFromSpanData(s *trace.SpanData, projectID string, mr *monitoredrespb.MonitoredResource, userAgent string) *tracepb.Span { //nolint: staticcheck
 	if s == nil {
 		return nil
 	}
@@ -60,7 +60,7 @@ func protoFromSpanData(s *trace.SpanData, projectID string, mr *monitoredrespb.M
 		name = "Recv." + name
 	}
 
-	sp := &tracepb.Span{
+	sp := &tracepb.Span{ //nolint: staticcheck
 		Name:                    "projects/" + projectID + "/traces/" + traceIDString + "/spans/" + spanIDString,
 		SpanId:                  spanIDString,
 		DisplayName:             trunc(name, 128),
@@ -87,22 +87,22 @@ func protoFromSpanData(s *trace.SpanData, projectID string, mr *monitoredrespb.M
 			droppedAnnotationsCount = len(as) - i
 			break
 		}
-		annotation := &tracepb.Span_TimeEvent_Annotation{Description: trunc(a.Message, maxAttributeStringValue)}
+		annotation := &tracepb.Span_TimeEvent_Annotation{Description: trunc(a.Message, maxAttributeStringValue)} //nolint: staticcheck
 		copyAttributes(&annotation.Attributes, a.Attributes)
-		event := &tracepb.Span_TimeEvent{
+		event := &tracepb.Span_TimeEvent{ //nolint: staticcheck
 			Time:  timestampProto(a.Time),
 			Value: &tracepb.Span_TimeEvent_Annotation_{Annotation: annotation},
 		}
 		annotations++
 		if sp.TimeEvents == nil {
-			sp.TimeEvents = &tracepb.Span_TimeEvents{}
+			sp.TimeEvents = &tracepb.Span_TimeEvents{} //nolint: staticcheck
 		}
 		sp.TimeEvents.TimeEvent = append(sp.TimeEvents.TimeEvent, event)
 	}
 
 	if sp.Attributes == nil {
-		sp.Attributes = &tracepb.Span_Attributes{
-			AttributeMap: make(map[string]*tracepb.AttributeValue),
+		sp.Attributes = &tracepb.Span_Attributes{ //nolint: staticcheck
+			AttributeMap: make(map[string]*tracepb.AttributeValue), //nolint: staticcheck
 		}
 	}
 
@@ -114,7 +114,7 @@ func protoFromSpanData(s *trace.SpanData, projectID string, mr *monitoredrespb.M
 	// used both here and in request headers when sending metric data, but have
 	// retained this non-override functionality for backwards compatibility.
 	if _, hasAgent := sp.Attributes.AttributeMap[agentLabel]; !hasAgent {
-		sp.Attributes.AttributeMap[agentLabel] = &tracepb.AttributeValue{
+		sp.Attributes.AttributeMap[agentLabel] = &tracepb.AttributeValue{ //nolint: staticcheck
 			Value: &tracepb.AttributeValue_StringValue{
 				StringValue: trunc(userAgent, maxAttributeStringValue),
 			},
@@ -129,13 +129,13 @@ func protoFromSpanData(s *trace.SpanData, projectID string, mr *monitoredrespb.M
 		}
 		messageEvents++
 		if sp.TimeEvents == nil {
-			sp.TimeEvents = &tracepb.Span_TimeEvents{}
+			sp.TimeEvents = &tracepb.Span_TimeEvents{} //nolint: staticcheck
 		}
-		sp.TimeEvents.TimeEvent = append(sp.TimeEvents.TimeEvent, &tracepb.Span_TimeEvent{
+		sp.TimeEvents.TimeEvent = append(sp.TimeEvents.TimeEvent, &tracepb.Span_TimeEvent{ //nolint: staticcheck
 			Time: timestampProto(e.Time),
 			Value: &tracepb.Span_TimeEvent_MessageEvent_{
-				MessageEvent: &tracepb.Span_TimeEvent_MessageEvent{
-					Type:                  tracepb.Span_TimeEvent_MessageEvent_Type(e.EventType),
+				MessageEvent: &tracepb.Span_TimeEvent_MessageEvent{ //nolint: staticcheck
+					Type:                  tracepb.Span_TimeEvent_MessageEvent_Type(e.EventType), //nolint: staticcheck
 					Id:                    e.MessageID,
 					UncompressedSizeBytes: e.UncompressedByteSize,
 					CompressedSizeBytes:   e.CompressedByteSize,
@@ -146,20 +146,20 @@ func protoFromSpanData(s *trace.SpanData, projectID string, mr *monitoredrespb.M
 
 	if droppedAnnotationsCount != 0 || droppedMessageEventsCount != 0 {
 		if sp.TimeEvents == nil {
-			sp.TimeEvents = &tracepb.Span_TimeEvents{}
+			sp.TimeEvents = &tracepb.Span_TimeEvents{} //nolint: staticcheck
 		}
 		sp.TimeEvents.DroppedAnnotationsCount = clip32(droppedAnnotationsCount)
 		sp.TimeEvents.DroppedMessageEventsCount = clip32(droppedMessageEventsCount)
 	}
 
 	if len(s.Links) > 0 {
-		sp.Links = &tracepb.Span_Links{}
-		sp.Links.Link = make([]*tracepb.Span_Link, 0, len(s.Links))
+		sp.Links = &tracepb.Span_Links{}                            //nolint: staticcheck
+		sp.Links.Link = make([]*tracepb.Span_Link, 0, len(s.Links)) //nolint: staticcheck
 		for _, l := range s.Links {
-			link := &tracepb.Span_Link{
+			link := &tracepb.Span_Link{ //nolint: staticcheck
 				TraceId: l.TraceID.String(),
 				SpanId:  l.SpanID.String(),
-				Type:    tracepb.Span_Link_Type(l.Type),
+				Type:    tracepb.Span_Link_Type(l.Type), //nolint: staticcheck
 			}
 			copyAttributes(&link.Attributes, l.Attributes)
 			sp.Links.Link = append(sp.Links.Link, link)
@@ -178,15 +178,15 @@ func timestampProto(t time.Time) *timestamppb.Timestamp {
 
 // copyMonitoredResourceAttributes copies proto monitoredResource to proto map field (Span_Attributes)
 // it creates the map if it is nil.
-func copyMonitoredResourceAttributes(out *tracepb.Span_Attributes, mr *monitoredrespb.MonitoredResource) *tracepb.Span_Attributes {
+func copyMonitoredResourceAttributes(out *tracepb.Span_Attributes, mr *monitoredrespb.MonitoredResource) *tracepb.Span_Attributes { //nolint: staticcheck
 	if mr == nil {
 		return out
 	}
 	if out == nil {
-		out = &tracepb.Span_Attributes{}
+		out = &tracepb.Span_Attributes{} //nolint: staticcheck
 	}
 	if out.AttributeMap == nil {
-		out.AttributeMap = make(map[string]*tracepb.AttributeValue)
+		out.AttributeMap = make(map[string]*tracepb.AttributeValue) //nolint: staticcheck
 	}
 	for k, v := range mr.Labels {
 		av := attributeValue(v)
@@ -197,15 +197,15 @@ func copyMonitoredResourceAttributes(out *tracepb.Span_Attributes, mr *monitored
 
 // copyAttributes copies a map of attributes to a proto map field.
 // It creates the map if it is nil.
-func copyAttributes(out **tracepb.Span_Attributes, in map[string]interface{}) {
+func copyAttributes(out **tracepb.Span_Attributes, in map[string]interface{}) { //nolint: staticcheck
 	if len(in) == 0 {
 		return
 	}
 	if *out == nil {
-		*out = &tracepb.Span_Attributes{}
+		*out = &tracepb.Span_Attributes{} //nolint: staticcheck
 	}
 	if (*out).AttributeMap == nil {
-		(*out).AttributeMap = make(map[string]*tracepb.AttributeValue)
+		(*out).AttributeMap = make(map[string]*tracepb.AttributeValue) //nolint: staticcheck
 	}
 	var dropped int32
 	for key, value := range in {
@@ -235,25 +235,25 @@ func copyAttributes(out **tracepb.Span_Attributes, in map[string]interface{}) {
 	(*out).DroppedAttributesCount = dropped
 }
 
-func attributeValue(v interface{}) *tracepb.AttributeValue {
+func attributeValue(v interface{}) *tracepb.AttributeValue { //nolint: staticcheck
 	switch value := v.(type) {
 	case bool:
-		return &tracepb.AttributeValue{
+		return &tracepb.AttributeValue{ //nolint: staticcheck
 			Value: &tracepb.AttributeValue_BoolValue{BoolValue: value},
 		}
 	case int64:
-		return &tracepb.AttributeValue{
+		return &tracepb.AttributeValue{ //nolint: staticcheck
 			Value: &tracepb.AttributeValue_IntValue{IntValue: value},
 		}
 	case float64:
 		// TODO: set double value if Stackdriver Trace support it in the future.
-		return &tracepb.AttributeValue{
+		return &tracepb.AttributeValue{ //nolint: staticcheck
 			Value: &tracepb.AttributeValue_StringValue{
 				StringValue: trunc(strconv.FormatFloat(value, 'f', -1, 64),
 					maxAttributeStringValue)},
 		}
 	case string:
-		return &tracepb.AttributeValue{
+		return &tracepb.AttributeValue{ //nolint: staticcheck
 			Value: &tracepb.AttributeValue_StringValue{StringValue: trunc(value, maxAttributeStringValue)},
 		}
 	}
@@ -261,7 +261,7 @@ func attributeValue(v interface{}) *tracepb.AttributeValue {
 }
 
 // trunc returns a TruncatableString truncated to the given limit.
-func trunc(s string, limit int) *tracepb.TruncatableString {
+func trunc(s string, limit int) *tracepb.TruncatableString { //nolint: staticcheck
 	if len(s) > limit {
 		b := []byte(s[:limit])
 		for {
@@ -272,12 +272,12 @@ func trunc(s string, limit int) *tracepb.TruncatableString {
 				break
 			}
 		}
-		return &tracepb.TruncatableString{
+		return &tracepb.TruncatableString{ //nolint: staticcheck
 			Value:              string(b),
 			TruncatedByteCount: clip32(len(s) - len(b)),
 		}
 	}
-	return &tracepb.TruncatableString{
+	return &tracepb.TruncatableString{ //nolint: staticcheck
 		Value:              s,
 		TruncatedByteCount: 0,
 	}

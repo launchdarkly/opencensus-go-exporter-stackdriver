@@ -28,7 +28,7 @@ import (
 	labelpb "google.golang.org/genproto/googleapis/api/label"
 	googlemetricpb "google.golang.org/genproto/googleapis/api/metric"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
-	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
+	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3" //nolint: staticcheck
 
 	"github.com/launchdarkly/opencensus-go-exporter-stackdriver/monitoredresource"
 	"go.opencensus.io/metric/metricdata"
@@ -100,7 +100,7 @@ func TestMetricToCreateTimeSeriesRequest(t *testing.T) {
 	// TODO:[rghetia] add test for built-in metrics.
 	tests := []struct {
 		in      *metricdata.Metric
-		want    []*monitoringpb.CreateTimeSeriesRequest
+		want    []*monitoringpb.CreateTimeSeriesRequest //nolint: staticcheck
 		wantErr string
 	}{
 		{
@@ -138,10 +138,10 @@ func TestMetricToCreateTimeSeriesRequest(t *testing.T) {
 					},
 				},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type:   "custom.googleapis.com/opencensus/with_metric_descriptor",
@@ -150,12 +150,12 @@ func TestMetricToCreateTimeSeriesRequest(t *testing.T) {
 							Resource: &monitoredrespb.MonitoredResource{
 								Type: "global",
 							},
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										EndTime: endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_DistributionValue{
 											DistributionValue: &distributionpb.Distribution{
 												Count:                 1,
@@ -222,10 +222,10 @@ func TestMetricToCreateTimeSeriesRequest(t *testing.T) {
 					},
 				},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type:   "custom.googleapis.com/opencensus/with_metric_descriptor",
@@ -234,13 +234,13 @@ func TestMetricToCreateTimeSeriesRequest(t *testing.T) {
 							Resource: &monitoredrespb.MonitoredResource{
 								Type: "global",
 							},
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										StartTime: startTimestamp,
 										EndTime:   endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_DistributionValue{
 											DistributionValue: &distributionpb.Distribution{
 												Count:                 1,
@@ -445,11 +445,11 @@ func TestMetricsToMonitoringMetrics_fromProtoPoint(t *testing.T) {
 		SpanID:       spanID,
 		TraceOptions: 1,
 	}
-	wantSpanCtxBytes, _ := proto.Marshal(&monitoringpb.SpanContext{SpanName: fmt.Sprintf("projects/foo/traces/%s/spans/%s", traceID.String(), spanID.String())})
+	wantSpanCtxBytes, _ := proto.Marshal(&monitoringpb.SpanContext{SpanName: fmt.Sprintf("projects/foo/traces/%s/spans/%s", traceID.String(), spanID.String())}) //nolint: staticcheck
 
 	tests := []struct {
 		in      *metricdata.Point
-		want    *monitoringpb.Point
+		want    *monitoringpb.Point //nolint: staticcheck
 		wantErr string
 	}{
 		{
@@ -473,12 +473,12 @@ func TestMetricsToMonitoringMetrics_fromProtoPoint(t *testing.T) {
 					},
 				},
 			},
-			want: &monitoringpb.Point{
-				Interval: &monitoringpb.TimeInterval{
+			want: &monitoringpb.Point{ //nolint: staticcheck
+				Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 					StartTime: startTimestamp,
 					EndTime:   endTimestamp,
 				},
-				Value: &monitoringpb.TypedValue{
+				Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 					Value: &monitoringpb.TypedValue_DistributionValue{
 						DistributionValue: &distributionpb.Distribution{
 							Count:                 1,
@@ -514,12 +514,12 @@ func TestMetricsToMonitoringMetrics_fromProtoPoint(t *testing.T) {
 				Time:  endTime,
 				Value: float64(50.0),
 			},
-			want: &monitoringpb.Point{
-				Interval: &monitoringpb.TimeInterval{
+			want: &monitoringpb.Point{ //nolint: staticcheck
+				Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 					StartTime: startTimestamp,
 					EndTime:   endTimestamp,
 				},
-				Value: &monitoringpb.TypedValue{
+				Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 					Value: &monitoringpb.TypedValue_DoubleValue{DoubleValue: 50},
 				},
 			},
@@ -529,12 +529,12 @@ func TestMetricsToMonitoringMetrics_fromProtoPoint(t *testing.T) {
 				Time:  endTime,
 				Value: int64(17),
 			},
-			want: &monitoringpb.Point{
-				Interval: &monitoringpb.TimeInterval{
+			want: &monitoringpb.Point{ //nolint: staticcheck
+				Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 					StartTime: startTimestamp,
 					EndTime:   endTimestamp,
 				},
-				Value: &monitoringpb.TypedValue{
+				Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 					Value: &monitoringpb.TypedValue_Int64Value{Int64Value: 17},
 				},
 			},
@@ -574,7 +574,7 @@ func TestResourceByDescriptor(t *testing.T) {
 
 	tests := []struct {
 		in      *metricdata.Metric
-		want    []*monitoringpb.CreateTimeSeriesRequest
+		want    []*monitoringpb.CreateTimeSeriesRequest //nolint: staticcheck
 		wantErr string
 	}{
 		{
@@ -616,10 +616,10 @@ func TestResourceByDescriptor(t *testing.T) {
 					},
 				},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type: "custom.googleapis.com/opencensus/custom_resource_one",
@@ -633,13 +633,13 @@ func TestResourceByDescriptor(t *testing.T) {
 									"k11": "v11",
 								},
 							},
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										StartTime: startTimestamp,
 										EndTime:   endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_Int64Value{
 											Int64Value: 5,
 										},
@@ -690,10 +690,10 @@ func TestResourceByDescriptor(t *testing.T) {
 					},
 				},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type: "custom.googleapis.com/opencensus/custom_resource_one",
@@ -707,13 +707,13 @@ func TestResourceByDescriptor(t *testing.T) {
 									"k11": "",
 								},
 							},
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										StartTime: startTimestamp,
 										EndTime:   endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_Int64Value{
 											Int64Value: 5,
 										},
@@ -764,10 +764,10 @@ func TestResourceByDescriptor(t *testing.T) {
 					},
 				},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type:   "custom.googleapis.com/opencensus/custom_resource_one",
@@ -779,13 +779,13 @@ func TestResourceByDescriptor(t *testing.T) {
 									"k11": "v11",
 								},
 							},
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										StartTime: startTimestamp,
 										EndTime:   endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_Int64Value{
 											Int64Value: 5,
 										},
@@ -836,10 +836,10 @@ func TestResourceByDescriptor(t *testing.T) {
 					},
 				},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type: "custom.googleapis.com/opencensus/custom_resource_two",
@@ -853,13 +853,13 @@ func TestResourceByDescriptor(t *testing.T) {
 									"k22": "v22",
 								},
 							},
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										StartTime: startTimestamp,
 										EndTime:   endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_Int64Value{
 											Int64Value: 5,
 										},
@@ -910,10 +910,10 @@ func TestResourceByDescriptor(t *testing.T) {
 					},
 				},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type: "custom.googleapis.com/opencensus/custom_resource_other",
@@ -925,13 +925,13 @@ func TestResourceByDescriptor(t *testing.T) {
 							Resource: &monitoredrespb.MonitoredResource{
 								Type: "global",
 							},
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										StartTime: startTimestamp,
 										EndTime:   endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_Int64Value{
 											Int64Value: 5,
 										},

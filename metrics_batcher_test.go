@@ -23,7 +23,7 @@ import (
 	monitoring "cloud.google.com/go/monitoring/apiv3/v2"
 	"google.golang.org/api/option"
 	googlemetricpb "google.golang.org/genproto/googleapis/api/metric"
-	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
+	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3" //nolint: staticcheck
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -89,14 +89,14 @@ func makeClient(addr string) (*monitoring.MetricClient, error) {
 
 // makeTs returns a list of n *monitoringpb.TimeSeries. The metric type (service/non-service)
 // is determined by serviceMetric
-func makeTs(n int, serviceMetric bool) []*monitoringpb.TimeSeries {
-	var tsl []*monitoringpb.TimeSeries
+func makeTs(n int, serviceMetric bool) []*monitoringpb.TimeSeries { //nolint: staticcheck
+	var tsl []*monitoringpb.TimeSeries //nolint: staticcheck
 	for i := 0; i < n; i++ {
 		metricType := fmt.Sprintf("custom.googleapis.com/opencensus/test/metric/%v", i)
 		if serviceMetric {
 			metricType = fmt.Sprintf("kubernetes.io/opencensus/test/metric/%v", i)
 		}
-		tsl = append(tsl, &monitoringpb.TimeSeries{
+		tsl = append(tsl, &monitoringpb.TimeSeries{ //nolint: staticcheck
 			Metric: &googlemetricpb.Metric{
 				Type: metricType,
 				Labels: map[string]string{
@@ -105,9 +105,9 @@ func makeTs(n int, serviceMetric bool) []*monitoringpb.TimeSeries {
 			},
 			MetricKind: googlemetricpb.MetricDescriptor_CUMULATIVE,
 			ValueType:  googlemetricpb.MetricDescriptor_INT64,
-			Points: []*monitoringpb.Point{
+			Points: []*monitoringpb.Point{ //nolint: staticcheck
 				{
-					Value: &monitoringpb.TypedValue{
+					Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 						Value: &monitoringpb.TypedValue_Int64Value{
 							Int64Value: int64(i),
 						},
@@ -124,8 +124,8 @@ func TestSendReqAndParseDropped(t *testing.T) {
 		name                        string
 		nonServiceTimeSeriesCount   int
 		serviceTimeSeriesCount      int
-		createTimeSeriesFunc        func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error
-		createServiceTimeSeriesFunc func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error
+		createTimeSeriesFunc        func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error //nolint: staticcheck
+		createServiceTimeSeriesFunc func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error //nolint: staticcheck
 		expectedErr                 bool
 		expectedDropped             int
 	}
@@ -135,10 +135,10 @@ func TestSendReqAndParseDropped(t *testing.T) {
 			name:                      "No error",
 			serviceTimeSeriesCount:    75,
 			nonServiceTimeSeriesCount: 75,
-			createTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error {
+			createTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error { //nolint: staticcheck
 				return nil
 			},
-			createServiceTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error {
+			createServiceTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error { //nolint: staticcheck
 				return nil
 			},
 			expectedErr:     false,
@@ -148,10 +148,10 @@ func TestSendReqAndParseDropped(t *testing.T) {
 			name:                      "Partial error",
 			serviceTimeSeriesCount:    75,
 			nonServiceTimeSeriesCount: 75,
-			createTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error {
+			createTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error { //nolint: staticcheck
 				return errors.New("One or more TimeSeries could not be written: Internal error encountered. Please retry after a few seconds. If internal errors persist, contact support at https://cloud.google.com/support/docs.: timeSeries[0-16,25-44,46-74]; Unknown metric: agent.googleapis.com/system.swap.page_faults: timeSeries[45]")
 			},
-			createServiceTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error {
+			createServiceTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error { //nolint: staticcheck
 				return errors.New("One or more TimeSeries could not be written: Internal error encountered. Please retry after a few seconds. If internal errors persist, contact support at https://cloud.google.com/support/docs.: timeSeries[0-16,25-44,46-74]; Unknown metric: agent.googleapis.com/system.swap.page_faults: timeSeries[45]")
 			},
 			expectedErr:     true,
@@ -161,10 +161,10 @@ func TestSendReqAndParseDropped(t *testing.T) {
 			name:                      "Incorrectly formatted error",
 			nonServiceTimeSeriesCount: 75,
 			serviceTimeSeriesCount:    75,
-			createTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error {
+			createTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error { //nolint: staticcheck
 				return errors.New("One or more TimeSeries could not be written: Internal error encountered. Please retry after a few seconds. If internal errors persist, contact support at https://cloud.google.com/support/docs.: timeSeries[0-16,25-44,,46-74]; Unknown metric: agent.googleapis.com/system.swap.page_faults: timeSeries[45x]")
 			},
-			createServiceTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error {
+			createServiceTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error { //nolint: staticcheck
 				return nil
 			},
 			expectedErr:     true,
@@ -174,10 +174,10 @@ func TestSendReqAndParseDropped(t *testing.T) {
 			name:                      "Unexpected error format",
 			nonServiceTimeSeriesCount: 75,
 			serviceTimeSeriesCount:    75,
-			createTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error {
+			createTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error { //nolint: staticcheck
 				return nil
 			},
-			createServiceTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error {
+			createServiceTimeSeriesFunc: func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error { //nolint: staticcheck
 				return errors.New("err1")
 			},
 			expectedErr:     true,
@@ -197,10 +197,10 @@ func TestSendReqAndParseDropped(t *testing.T) {
 			}()
 
 			mc, _ := monitoring.NewMetricClient(context.Background())
-			var tsl []*monitoringpb.TimeSeries
+			var tsl []*monitoringpb.TimeSeries //nolint: staticcheck
 			tsl = append(tsl, makeTs(test.serviceTimeSeriesCount, true)...)
 			tsl = append(tsl, makeTs(test.nonServiceTimeSeriesCount, false)...)
-			d, errors := sendReq(context.Background(), mc, &monitoringpb.CreateTimeSeriesRequest{TimeSeries: tsl})
+			d, errors := sendReq(context.Background(), mc, &monitoringpb.CreateTimeSeriesRequest{TimeSeries: tsl}) //nolint: staticcheck
 			if !test.expectedErr && len(errors) > 0 {
 				t.Fatalf("Expected no errors, got %v", errors)
 			}

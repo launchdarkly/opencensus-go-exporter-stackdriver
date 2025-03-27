@@ -41,7 +41,7 @@ import (
 	labelpb "google.golang.org/genproto/googleapis/api/label"
 	metricpb "google.golang.org/genproto/googleapis/api/metric"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
-	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
+	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3" //nolint: staticcheck
 	"google.golang.org/protobuf/proto"
 )
 
@@ -234,26 +234,26 @@ func (e *statsExporter) uploadStats(vds []*view.Data) error {
 	return nil
 }
 
-func (e *statsExporter) makeReq(vds []*view.Data, limit int) []*monitoringpb.CreateTimeSeriesRequest {
-	var reqs []*monitoringpb.CreateTimeSeriesRequest
+func (e *statsExporter) makeReq(vds []*view.Data, limit int) []*monitoringpb.CreateTimeSeriesRequest { //nolint: staticcheck
+	var reqs []*monitoringpb.CreateTimeSeriesRequest //nolint: staticcheck
 
-	var allTimeSeries []*monitoringpb.TimeSeries
+	var allTimeSeries []*monitoringpb.TimeSeries //nolint: staticcheck
 	for _, vd := range vds {
 		for _, row := range vd.Rows {
 			tags, resource := e.getMonitoredResource(vd.View, append([]tag.Tag(nil), row.Tags...))
-			ts := &monitoringpb.TimeSeries{
+			ts := &monitoringpb.TimeSeries{ //nolint: staticcheck
 				Metric: &metricpb.Metric{
 					Type:   e.metricType(vd.View),
 					Labels: newLabels(e.defaultLabels, tags),
 				},
 				Resource: resource,
-				Points:   []*monitoringpb.Point{newPoint(vd.View, row, vd.Start, vd.End)},
+				Points:   []*monitoringpb.Point{newPoint(vd.View, row, vd.Start, vd.End)}, //nolint: staticcheck
 			}
 			allTimeSeries = append(allTimeSeries, ts)
 		}
 	}
 
-	var timeSeries []*monitoringpb.TimeSeries
+	var timeSeries []*monitoringpb.TimeSeries //nolint: staticcheck
 	for _, ts := range allTimeSeries {
 		timeSeries = append(timeSeries, ts)
 		if len(timeSeries) == limit {
@@ -373,7 +373,7 @@ func (e *statsExporter) displayName(suffix string) string {
 	return path.Join(defaultDisplayNamePrefix, suffix)
 }
 
-func (e *statsExporter) combineTimeSeriesToCreateTimeSeriesRequest(ts []*monitoringpb.TimeSeries) (ctsreql []*monitoringpb.CreateTimeSeriesRequest) {
+func (e *statsExporter) combineTimeSeriesToCreateTimeSeriesRequest(ts []*monitoringpb.TimeSeries) (ctsreql []*monitoringpb.CreateTimeSeriesRequest) { //nolint: staticcheck
 	if len(ts) == 0 {
 		return nil
 	}
@@ -390,8 +390,8 @@ func (e *statsExporter) combineTimeSeriesToCreateTimeSeriesRequest(ts []*monitor
 	// This scenario happens when we are using the OpenCensus Agent in which multiple metrics
 	// are streamed by various client applications.
 	// See https://github.com/census-ecosystem/opencensus-go-exporter-stackdriver/issues/73
-	uniqueTimeSeries := make([]*monitoringpb.TimeSeries, 0, len(ts))
-	nonUniqueTimeSeries := make([]*monitoringpb.TimeSeries, 0, len(ts))
+	uniqueTimeSeries := make([]*monitoringpb.TimeSeries, 0, len(ts))    //nolint: staticcheck
+	nonUniqueTimeSeries := make([]*monitoringpb.TimeSeries, 0, len(ts)) //nolint: staticcheck
 	seenMetrics := make(map[string]struct{})
 
 	for _, tti := range ts {
@@ -407,7 +407,7 @@ func (e *statsExporter) combineTimeSeriesToCreateTimeSeriesRequest(ts []*monitor
 	// UniqueTimeSeries can be bunched up together
 	// While for each nonUniqueTimeSeries, we have
 	// to make a unique CreateTimeSeriesRequest.
-	ctsreql = append(ctsreql, &monitoringpb.CreateTimeSeriesRequest{
+	ctsreql = append(ctsreql, &monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 		Name:       fmt.Sprintf("projects/%s", e.o.ProjectID),
 		TimeSeries: uniqueTimeSeries,
 	})
@@ -448,7 +448,7 @@ func metricSignature(metric *metricpb.Metric) string {
 	return fmt.Sprintf("%s:%s", metric.GetType(), strings.Join(labelValues, ","))
 }
 
-func newPoint(v *view.View, row *view.Row, start, end time.Time) *monitoringpb.Point {
+func newPoint(v *view.View, row *view.Row, start, end time.Time) *monitoringpb.Point { //nolint: staticcheck
 	switch v.Aggregation.Type {
 	case view.AggTypeLastValue:
 		return newGaugePoint(v, row, end)
@@ -457,14 +457,14 @@ func newPoint(v *view.View, row *view.Row, start, end time.Time) *monitoringpb.P
 	}
 }
 
-func toValidTimeIntervalpb(start, end time.Time) *monitoringpb.TimeInterval {
+func toValidTimeIntervalpb(start, end time.Time) *monitoringpb.TimeInterval { //nolint: staticcheck
 	// The end time of a new interval must be at least a millisecond after the end time of the
 	// previous interval, for all non-gauge types.
 	// https://cloud.google.com/monitoring/api/ref_v3/rpc/google.monitoring.v3#timeinterval
 	if end.Sub(start).Milliseconds() <= 1 {
 		end = start.Add(time.Millisecond)
 	}
-	return &monitoringpb.TimeInterval{
+	return &monitoringpb.TimeInterval{ //nolint: staticcheck
 		StartTime: &timestamp.Timestamp{
 			Seconds: start.Unix(),
 			Nanos:   int32(start.Nanosecond()),
@@ -476,46 +476,46 @@ func toValidTimeIntervalpb(start, end time.Time) *monitoringpb.TimeInterval {
 	}
 }
 
-func newCumulativePoint(v *view.View, row *view.Row, start, end time.Time) *monitoringpb.Point {
-	return &monitoringpb.Point{
+func newCumulativePoint(v *view.View, row *view.Row, start, end time.Time) *monitoringpb.Point { //nolint: staticcheck
+	return &monitoringpb.Point{ //nolint: staticcheck
 		Interval: toValidTimeIntervalpb(start, end),
 		Value:    newTypedValue(v, row),
 	}
 }
 
-func newGaugePoint(v *view.View, row *view.Row, end time.Time) *monitoringpb.Point {
+func newGaugePoint(v *view.View, row *view.Row, end time.Time) *monitoringpb.Point { //nolint: staticcheck
 	gaugeTime := &timestamp.Timestamp{
 		Seconds: end.Unix(),
 		Nanos:   int32(end.Nanosecond()),
 	}
-	return &monitoringpb.Point{
-		Interval: &monitoringpb.TimeInterval{
+	return &monitoringpb.Point{ //nolint: staticcheck
+		Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 			EndTime: gaugeTime,
 		},
 		Value: newTypedValue(v, row),
 	}
 }
 
-func newTypedValue(vd *view.View, r *view.Row) *monitoringpb.TypedValue {
+func newTypedValue(vd *view.View, r *view.Row) *monitoringpb.TypedValue { //nolint: staticcheck
 	switch v := r.Data.(type) {
 	case *view.CountData:
-		return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_Int64Value{
+		return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_Int64Value{ //nolint: staticcheck
 			Int64Value: v.Value,
 		}}
 	case *view.SumData:
 		switch vd.Measure.(type) {
 		case *stats.Int64Measure:
-			return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_Int64Value{
+			return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_Int64Value{ //nolint: staticcheck
 				Int64Value: int64(v.Value),
 			}}
 		case *stats.Float64Measure:
-			return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_DoubleValue{
+			return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_DoubleValue{ //nolint: staticcheck
 				DoubleValue: v.Value,
 			}}
 		}
 	case *view.DistributionData:
 		insertZeroBound := shouldInsertZeroBound(vd.Aggregation.Buckets...)
-		return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_DistributionValue{
+		return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_DistributionValue{ //nolint: staticcheck
 			DistributionValue: &distributionpb.Distribution{
 				Count:                 v.Count,
 				Mean:                  v.Mean,
@@ -538,11 +538,11 @@ func newTypedValue(vd *view.View, r *view.Row) *monitoringpb.TypedValue {
 	case *view.LastValueData:
 		switch vd.Measure.(type) {
 		case *stats.Int64Measure:
-			return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_Int64Value{
+			return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_Int64Value{ //nolint: staticcheck
 				Int64Value: int64(v.Value),
 			}}
 		case *stats.Float64Measure:
-			return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_DoubleValue{
+			return &monitoringpb.TypedValue{Value: &monitoringpb.TypedValue_DoubleValue{ //nolint: staticcheck
 				DoubleValue: v.Value,
 			}}
 		}
@@ -610,7 +610,7 @@ func newLabelDescriptors(defaults map[string]labelValue, keys []tag.Key) []*labe
 func (e *statsExporter) createMetricDescriptor(ctx context.Context, md *metricpb.MetricDescriptor) error {
 	ctx, cancel := newContextWithTimeout(ctx, e.o.Timeout)
 	defer cancel()
-	cmrdesc := &monitoringpb.CreateMetricDescriptorRequest{
+	cmrdesc := &monitoringpb.CreateMetricDescriptorRequest{ //nolint: staticcheck
 		Name:             fmt.Sprintf("projects/%s", e.o.ProjectID),
 		MetricDescriptor: md,
 	}
@@ -618,45 +618,46 @@ func (e *statsExporter) createMetricDescriptor(ctx context.Context, md *metricpb
 	return err
 }
 
-var createMetricDescriptor = func(ctx context.Context, c *monitoring.MetricClient, mdr *monitoringpb.CreateMetricDescriptorRequest) (*metricpb.MetricDescriptor, error) {
+var createMetricDescriptor = func(ctx context.Context, c *monitoring.MetricClient, mdr *monitoringpb.CreateMetricDescriptorRequest) (*metricpb.MetricDescriptor, error) { //nolint: staticcheck //nolint: staticcheck
 	return c.CreateMetricDescriptor(ctx, mdr)
 }
 
-var createTimeSeries = func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error {
+var createTimeSeries = func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error { //nolint: staticcheck
 	return c.CreateTimeSeries(ctx, ts)
 }
 
-var createServiceTimeSeries = func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error {
+var createServiceTimeSeries = func(ctx context.Context, c *monitoring.MetricClient, ts *monitoringpb.CreateTimeSeriesRequest) error { //nolint: staticcheck
 	return c.CreateServiceTimeSeries(ctx, ts)
 }
 
 // splitCreateTimeSeriesRequest splits a *monitoringpb.CreateTimeSeriesRequest object into two new objects:
-//   * The first object only contains service time series.
-//   * The second object only contains non-service time series.
+//   - The first object only contains service time series.
+//   - The second object only contains non-service time series.
+//
 // A returned object may be nil if no time series is found in the original request that satisfies the rules
 // above.
 // All other properties of the original CreateTimeSeriesRequest object are kept in the returned objects.
-func splitCreateTimeSeriesRequest(req *monitoringpb.CreateTimeSeriesRequest) (*monitoringpb.CreateTimeSeriesRequest, *monitoringpb.CreateTimeSeriesRequest) {
-	var serviceReq, nonServiceReq *monitoringpb.CreateTimeSeriesRequest
+func splitCreateTimeSeriesRequest(req *monitoringpb.CreateTimeSeriesRequest) (*monitoringpb.CreateTimeSeriesRequest, *monitoringpb.CreateTimeSeriesRequest) { //nolint: staticcheck
+	var serviceReq, nonServiceReq *monitoringpb.CreateTimeSeriesRequest //nolint: staticcheck
 	serviceTs, nonServiceTs := splitTimeSeries(req.TimeSeries)
 	// reset timeseries as we just split it to avoid cloning it in the calls below
 	req.TimeSeries = nil
 	if len(serviceTs) > 0 {
-		serviceReq = proto.Clone(req).(*monitoringpb.CreateTimeSeriesRequest)
+		serviceReq = proto.Clone(req).(*monitoringpb.CreateTimeSeriesRequest) //nolint: staticcheck
 		serviceReq.TimeSeries = serviceTs
 	}
 	if len(nonServiceTs) > 0 {
-		nonServiceReq = proto.Clone(req).(*monitoringpb.CreateTimeSeriesRequest)
+		nonServiceReq = proto.Clone(req).(*monitoringpb.CreateTimeSeriesRequest) //nolint: staticcheck
 		nonServiceReq.TimeSeries = nonServiceTs
 	}
 	return serviceReq, nonServiceReq
 }
 
 // splitTimeSeries splits a []*monitoringpb.TimeSeries slice into two:
-//   * The first slice only contains service time series
-//   * The second slice only contains non-service time series
-func splitTimeSeries(timeSeries []*monitoringpb.TimeSeries) ([]*monitoringpb.TimeSeries, []*monitoringpb.TimeSeries) {
-	var serviceTs, nonServiceTs []*monitoringpb.TimeSeries
+//   - The first slice only contains service time series
+//   - The second slice only contains non-service time series
+func splitTimeSeries(timeSeries []*monitoringpb.TimeSeries) ([]*monitoringpb.TimeSeries, []*monitoringpb.TimeSeries) { //nolint: staticcheck
+	var serviceTs, nonServiceTs []*monitoringpb.TimeSeries //nolint: staticcheck
 	for _, ts := range timeSeries {
 		if serviceMetric(ts.Metric.Type) {
 			serviceTs = append(serviceTs, ts)

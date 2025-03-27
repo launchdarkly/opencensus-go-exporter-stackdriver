@@ -27,7 +27,7 @@ import (
 	labelpb "google.golang.org/genproto/googleapis/api/label"
 	googlemetricpb "google.golang.org/genproto/googleapis/api/metric"
 	monitoredrespb "google.golang.org/genproto/googleapis/api/monitoredres"
-	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3"
+	monitoringpb "google.golang.org/genproto/googleapis/monitoring/v3" //nolint: staticcheck
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/testing/protocmp"
@@ -132,10 +132,10 @@ func TestExportTimeSeriesWithDifferentLabels(t *testing.T) {
 			},
 		})
 
-	var wantTimeSeries []*monitoringpb.CreateTimeSeriesRequest
-	wantTimeSeries = append(wantTimeSeries, &monitoringpb.CreateTimeSeriesRequest{
+	var wantTimeSeries []*monitoringpb.CreateTimeSeriesRequest                     //nolint: staticcheck
+	wantTimeSeries = append(wantTimeSeries, &monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 		Name: "projects/equivalence",
-		TimeSeries: []*monitoringpb.TimeSeries{
+		TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 			{
 				Metric: &googlemetricpb.Metric{
 					Type: "custom.googleapis.com/opencensus/ocagent.io/calls",
@@ -149,13 +149,13 @@ func TestExportTimeSeriesWithDifferentLabels(t *testing.T) {
 				},
 				MetricKind: googlemetricpb.MetricDescriptor_CUMULATIVE,
 				ValueType:  googlemetricpb.MetricDescriptor_INT64,
-				Points: []*monitoringpb.Point{
+				Points: []*monitoringpb.Point{ //nolint: staticcheck
 					{
-						Interval: &monitoringpb.TimeInterval{
+						Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 							StartTime: startTimestamp,
 							EndTime:   endTimestamp,
 						},
-						Value: &monitoringpb.TypedValue{
+						Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 							Value: &monitoringpb.TypedValue_Int64Value{
 								Int64Value: 1,
 							},
@@ -176,13 +176,13 @@ func TestExportTimeSeriesWithDifferentLabels(t *testing.T) {
 				},
 				MetricKind: googlemetricpb.MetricDescriptor_CUMULATIVE,
 				ValueType:  googlemetricpb.MetricDescriptor_INT64,
-				Points: []*monitoringpb.Point{
+				Points: []*monitoringpb.Point{ //nolint: staticcheck
 					{
-						Interval: &monitoringpb.TimeInterval{
+						Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 							StartTime: startTimestamp,
 							EndTime:   endTimestamp,
 						},
-						Value: &monitoringpb.TypedValue{
+						Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 							Value: &monitoringpb.TypedValue_Int64Value{
 								Int64Value: 1,
 							},
@@ -199,8 +199,8 @@ func TestExportTimeSeriesWithDifferentLabels(t *testing.T) {
 		t.Fatalf("Error pushing metrics, dropped:%d err:%v", dropped, err)
 	}
 
-	var gotTimeSeries []*monitoringpb.CreateTimeSeriesRequest
-	server.forEachStackdriverTimeSeries(func(sdt *monitoringpb.CreateTimeSeriesRequest) {
+	var gotTimeSeries []*monitoringpb.CreateTimeSeriesRequest                             //nolint: staticcheck
+	server.forEachStackdriverTimeSeries(func(sdt *monitoringpb.CreateTimeSeriesRequest) { //nolint: staticcheck
 		gotTimeSeries = append(gotTimeSeries, sdt)
 	})
 
@@ -220,7 +220,7 @@ func TestProtoMetricToCreateTimeSeriesRequest(t *testing.T) {
 	tests := []struct {
 		name          string
 		in            *metricspb.Metric
-		want          []*monitoringpb.CreateTimeSeriesRequest
+		want          []*monitoringpb.CreateTimeSeriesRequest //nolint: staticcheck
 		wantErr       string
 		statsExporter *statsExporter
 	}{
@@ -264,10 +264,10 @@ func TestProtoMetricToCreateTimeSeriesRequest(t *testing.T) {
 			statsExporter: &statsExporter{
 				o: Options{ProjectID: "foo", MapResource: DefaultMapResource},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type:   "custom.googleapis.com/opencensus/with_metric_descriptor",
@@ -278,13 +278,13 @@ func TestProtoMetricToCreateTimeSeriesRequest(t *testing.T) {
 							},
 							MetricKind: googlemetricpb.MetricDescriptor_CUMULATIVE,
 							ValueType:  googlemetricpb.MetricDescriptor_DISTRIBUTION,
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										StartTime: startTimestamp,
 										EndTime:   endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_DistributionValue{
 											DistributionValue: &distributionpb.Distribution{
 												Count:                 1,
@@ -335,10 +335,10 @@ func TestProtoMetricToCreateTimeSeriesRequest(t *testing.T) {
 			statsExporter: &statsExporter{
 				o: Options{ProjectID: "foo", MapResource: DefaultMapResource},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type:   "custom.googleapis.com/opencensus/with_metric_descriptor_2",
@@ -349,13 +349,13 @@ func TestProtoMetricToCreateTimeSeriesRequest(t *testing.T) {
 							},
 							MetricKind: googlemetricpb.MetricDescriptor_CUMULATIVE,
 							ValueType:  googlemetricpb.MetricDescriptor_DISTRIBUTION,
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										StartTime: startTimestamp,
 										EndTime:   endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_DoubleValue{
 											DoubleValue: 25.0,
 										},
@@ -411,7 +411,7 @@ func TestProtoMetricWithDifferentResource(t *testing.T) {
 
 	tests := []struct {
 		in            *metricspb.Metric
-		want          []*monitoringpb.CreateTimeSeriesRequest
+		want          []*monitoringpb.CreateTimeSeriesRequest //nolint: staticcheck
 		wantErr       string
 		statsExporter *statsExporter
 	}{
@@ -450,10 +450,10 @@ func TestProtoMetricWithDifferentResource(t *testing.T) {
 			statsExporter: &statsExporter{
 				o: Options{ProjectID: "foo", MapResource: DefaultMapResource},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type:   "custom.googleapis.com/opencensus/with_container_resource",
@@ -471,13 +471,13 @@ func TestProtoMetricWithDifferentResource(t *testing.T) {
 							},
 							MetricKind: googlemetricpb.MetricDescriptor_CUMULATIVE,
 							ValueType:  googlemetricpb.MetricDescriptor_INT64,
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										StartTime: startTimestamp,
 										EndTime:   endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_Int64Value{
 											Int64Value: 1,
 										},
@@ -522,10 +522,10 @@ func TestProtoMetricWithDifferentResource(t *testing.T) {
 			statsExporter: &statsExporter{
 				o: Options{ProjectID: "foo", MapResource: DefaultMapResource},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: "projects/foo",
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type:   "custom.googleapis.com/opencensus/with_gce_resource",
@@ -540,13 +540,13 @@ func TestProtoMetricWithDifferentResource(t *testing.T) {
 							},
 							MetricKind: googlemetricpb.MetricDescriptor_CUMULATIVE,
 							ValueType:  googlemetricpb.MetricDescriptor_INT64,
-							Points: []*monitoringpb.Point{
+							Points: []*monitoringpb.Point{ //nolint: staticcheck
 								{
-									Interval: &monitoringpb.TimeInterval{
+									Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 										StartTime: startTimestamp,
 										EndTime:   endTimestamp,
 									},
-									Value: &monitoringpb.TypedValue{
+									Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 										Value: &monitoringpb.TypedValue_Int64Value{
 											Int64Value: 1,
 										},
@@ -683,7 +683,7 @@ func TestProtoMetricsToMonitoringMetrics_fromProtoPoint(t *testing.T) {
 
 	tests := []struct {
 		in      *metricspb.Point
-		want    *monitoringpb.Point
+		want    *monitoringpb.Point //nolint: staticcheck
 		wantErr string
 	}{
 		{
@@ -708,12 +708,12 @@ func TestProtoMetricsToMonitoringMetrics_fromProtoPoint(t *testing.T) {
 					},
 				},
 			},
-			want: &monitoringpb.Point{
-				Interval: &monitoringpb.TimeInterval{
+			want: &monitoringpb.Point{ //nolint: staticcheck
+				Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 					StartTime: startTimestamp,
 					EndTime:   endTimestamp,
 				},
-				Value: &monitoringpb.TypedValue{
+				Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 					Value: &monitoringpb.TypedValue_DistributionValue{
 						DistributionValue: &distributionpb.Distribution{
 							Count:                 1,
@@ -737,12 +737,12 @@ func TestProtoMetricsToMonitoringMetrics_fromProtoPoint(t *testing.T) {
 				Timestamp: endTimestamp,
 				Value:     &metricspb.Point_DoubleValue{DoubleValue: 50},
 			},
-			want: &monitoringpb.Point{
-				Interval: &monitoringpb.TimeInterval{
+			want: &monitoringpb.Point{ //nolint: staticcheck
+				Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 					StartTime: startTimestamp,
 					EndTime:   endTimestamp,
 				},
-				Value: &monitoringpb.TypedValue{
+				Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 					Value: &monitoringpb.TypedValue_DoubleValue{DoubleValue: 50},
 				},
 			},
@@ -752,12 +752,12 @@ func TestProtoMetricsToMonitoringMetrics_fromProtoPoint(t *testing.T) {
 				Timestamp: endTimestamp,
 				Value:     &metricspb.Point_Int64Value{Int64Value: 17},
 			},
-			want: &monitoringpb.Point{
-				Interval: &monitoringpb.TimeInterval{
+			want: &monitoringpb.Point{ //nolint: staticcheck
+				Interval: &monitoringpb.TimeInterval{ //nolint: staticcheck
 					StartTime: startTimestamp,
 					EndTime:   endTimestamp,
 				},
-				Value: &monitoringpb.TypedValue{
+				Value: &monitoringpb.TypedValue{ //nolint: staticcheck
 					Value: &monitoringpb.TypedValue_Int64Value{Int64Value: 17},
 				},
 			},
@@ -787,11 +787,11 @@ func TestCombineTimeSeriesAndDeduplication(t *testing.T) {
 	se := new(statsExporter)
 
 	tests := []struct {
-		in   []*monitoringpb.TimeSeries
-		want []*monitoringpb.CreateTimeSeriesRequest
+		in   []*monitoringpb.TimeSeries              //nolint: staticcheck
+		want []*monitoringpb.CreateTimeSeriesRequest //nolint: staticcheck
 	}{
 		{
-			in: []*monitoringpb.TimeSeries{
+			in: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 				{
 					Metric: &googlemetricpb.Metric{
 						Type: "a/b/c",
@@ -827,10 +827,10 @@ func TestCombineTimeSeriesAndDeduplication(t *testing.T) {
 					},
 				},
 			},
-			want: []*monitoringpb.CreateTimeSeriesRequest{
+			want: []*monitoringpb.CreateTimeSeriesRequest{ //nolint: staticcheck
 				{
 					Name: fmt.Sprintf("projects/%s", se.o.ProjectID),
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type: "a/b/c",
@@ -861,7 +861,7 @@ func TestCombineTimeSeriesAndDeduplication(t *testing.T) {
 				},
 				{
 					Name: fmt.Sprintf("projects/%s", se.o.ProjectID),
-					TimeSeries: []*monitoringpb.TimeSeries{
+					TimeSeries: []*monitoringpb.TimeSeries{ //nolint: staticcheck
 						{
 							Metric: &googlemetricpb.Metric{
 								Type: "a/b/c",
@@ -1149,7 +1149,7 @@ func makePercentileValue(val, percentile float64) *metricspb.SummaryValue_Snapsh
 	}
 }
 
-func protoMetricToTimeSeries(ctx context.Context, se *statsExporter, mappedRsc *monitoredrespb.MonitoredResource, metric *metricspb.Metric) ([]*monitoringpb.TimeSeries, error) {
+func protoMetricToTimeSeries(ctx context.Context, se *statsExporter, mappedRsc *monitoredrespb.MonitoredResource, metric *metricspb.Metric) ([]*monitoringpb.TimeSeries, error) { //nolint: staticcheck
 	mb := newMetricsBatcher(ctx, se.o.ProjectID, se.o.NumberOfWorkers, se.c, defaultTimeout)
 	se.protoMetricToTimeSeries(ctx, mappedRsc, metric, mb)
 	return mb.allTss, mb.close(ctx)
