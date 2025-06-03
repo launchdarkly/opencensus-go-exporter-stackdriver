@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.5](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/compare/v0.14.4...v0.14.5) (2025-06-03)
+
+
+### Bug Fixes
+
+* Bump golang.org/x/net to v0.38 for CVE-2025-22872 ([#14](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/issues/14)) ([768df91](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/commit/768df91854e3cf9b27a4b9135e5a184169d2163c))
+
 ## [0.14.4](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/compare/v0.14.3...v0.14.4) (2025-03-27)
 
 
