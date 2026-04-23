@@ -427,7 +427,7 @@ func readTestCaseFromFiles(t *testing.T, filename string) *testCases {
 	// Read input Metrics proto.
 	f, err := readFile("testdata/" + filename + "/inMetrics.txt")
 	if err != nil {
-		t.Fatalf("error opening in file " + filename)
+		t.Fatal("error opening in file " + filename)
 	}
 
 	strMetrics := strings.Split(string(f), "---")
@@ -435,7 +435,7 @@ func readTestCaseFromFiles(t *testing.T, filename string) *testCases {
 		in := metricspb.Metric{}
 		err = prototext.Unmarshal([]byte(strMetric), &in)
 		if err != nil {
-			t.Fatalf("error unmarshalling Metric protos from file " + filename)
+			t.Fatal("error unmarshalling Metric protos from file " + filename)
 		}
 		tc.inMetric = append(tc.inMetric, &in)
 	}
@@ -443,7 +443,7 @@ func readTestCaseFromFiles(t *testing.T, filename string) *testCases {
 	// Read expected output CreateMetricDescriptorRequest proto.
 	f, err = readFile("testdata/" + filename + "/outMDR.txt")
 	if err != nil {
-		t.Fatalf("error opening in file " + filename)
+		t.Fatal("error opening in file " + filename)
 	}
 
 	strOutMDRs := strings.Split(string(f), "---")
@@ -451,7 +451,7 @@ func readTestCaseFromFiles(t *testing.T, filename string) *testCases {
 		outMDR := monitoringpb.CreateMetricDescriptorRequest{} //nolint: staticcheck
 		err = prototext.Unmarshal([]byte(strOutMDR), &outMDR)
 		if err != nil {
-			t.Fatalf("error unmarshalling CreateMetricDescriptorRequest protos from file " + filename)
+			t.Fatal("error unmarshalling CreateMetricDescriptorRequest protos from file " + filename)
 		}
 		if outMDR.Name != "" {
 			tc.outMDR = append(tc.outMDR, &outMDR)
@@ -461,7 +461,7 @@ func readTestCaseFromFiles(t *testing.T, filename string) *testCases {
 	// Read expected output CreateTimeSeriesRequest proto.
 	f, err = readFile("testdata/" + filename + "/outTSR.txt")
 	if err != nil {
-		t.Fatalf("error opening in file " + filename)
+		t.Fatal("error opening in file " + filename)
 	}
 
 	strOutTSRs := strings.Split(string(f), "---")
@@ -469,7 +469,7 @@ func readTestCaseFromFiles(t *testing.T, filename string) *testCases {
 		outTSR := monitoringpb.CreateTimeSeriesRequest{} //nolint: staticcheck
 		err = prototext.Unmarshal([]byte(strOutTSR), &outTSR)
 		if err != nil {
-			t.Fatalf("error unmarshalling CreateTimeSeriesRequest protos from file " + filename)
+			t.Fatal("error unmarshalling CreateTimeSeriesRequest protos from file " + filename)
 		}
 		tc.outTSR = append(tc.outTSR, &outTSR)
 	}
@@ -480,7 +480,7 @@ func readTestResourcesFiles(t *testing.T, filename string) ([]*resourcepb.Resour
 	// Read input Resource proto.
 	f, err := readFile("testdata/" + filename + "/in.txt")
 	if err != nil {
-		t.Fatalf("error opening in file " + filename)
+		t.Fatal("error opening in file " + filename)
 	}
 
 	inResources := []*resourcepb.Resource{}
@@ -489,7 +489,7 @@ func readTestResourcesFiles(t *testing.T, filename string) ([]*resourcepb.Resour
 		inRes := resourcepb.Resource{}
 		err = prototext.Unmarshal([]byte(strRes), &inRes)
 		if err != nil {
-			t.Fatalf("error unmarshalling input Resource protos from file " + filename)
+			t.Fatal("error unmarshalling input Resource protos from file " + filename)
 		}
 		inResources = append(inResources, &inRes)
 	}
@@ -497,7 +497,7 @@ func readTestResourcesFiles(t *testing.T, filename string) ([]*resourcepb.Resour
 	// Read output Resource proto.
 	f, err = readFile("testdata/" + filename + "/out.txt")
 	if err != nil {
-		t.Fatalf("error opening out file " + filename)
+		t.Fatal("error opening out file " + filename)
 	}
 
 	outResources := []*monitoredrespb.MonitoredResource{}
@@ -506,7 +506,7 @@ func readTestResourcesFiles(t *testing.T, filename string) ([]*resourcepb.Resour
 		outRes := monitoredrespb.MonitoredResource{}
 		err = prototext.Unmarshal([]byte(strRes), &outRes)
 		if err != nil {
-			t.Fatalf("error unmarshalling output Resource protos from file " + filename)
+			t.Fatal("error unmarshalling output Resource protos from file " + filename)
 		}
 		outResources = append(outResources, &outRes)
 	}
