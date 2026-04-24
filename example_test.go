@@ -67,12 +67,12 @@ func Example_gKE() {
 	// This example shows how to set up a Stackdriver exporter suitable for
 	// monitoring a GKE container.
 
-	instanceID, err := metadata.InstanceID()
+	instanceID, err := metadata.InstanceID() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
 	if err != nil {
 		log.Println("Error getting instance ID:", err)
 		instanceID = "unknown"
 	}
-	zone, err := metadata.Zone()
+	zone, err := metadata.Zone() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
 	if err != nil {
 		log.Println("Error getting zone:", err)
 		zone = "unknown"
