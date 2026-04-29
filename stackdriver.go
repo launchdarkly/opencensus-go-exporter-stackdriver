@@ -324,7 +324,11 @@ func NewExporter(o Options) (*Exporter, error) {
 	}
 	if o.Location == "" {
 		if metadataapi.OnGCE() {
-			zone, err := metadataapi.Zone() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
+			ctx := o.Context
+			if ctx == nil {
+				ctx = context.Background()
+			}
+			zone, err := metadataapi.ZoneWithContext(ctx)
 			if err != nil {
 				// This error should be logged with a warning level.
 				err = fmt.Errorf("setting Stackdriver default location failed: %s", err)
