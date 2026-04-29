@@ -9,6 +9,8 @@ on:
 
 jobs:
   unit-test-and-coverage:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     name: 'Unit Tests and Coverage'
     steps:
