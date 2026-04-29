@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.6](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/compare/v0.14.5...v0.14.6) (2026-04-29)
+
+
+### Bug Fixes
+
+* bump github.com/prometheus/prometheus to v0.311.2 for CVE-2026-40179 ([#22](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/issues/22)) ([edceebf](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/commit/edceebf783ea51516ef4758a938b449258efe982))
+
 ## [0.14.5](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/compare/v0.14.4...v0.14.5) (2025-06-03)
 
 
