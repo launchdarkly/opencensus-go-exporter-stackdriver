@@ -43,7 +43,7 @@ func TestExportTimeSeriesWithDifferentLabels(t *testing.T) {
 	defer doneFn()
 
 	// Now create a gRPC connection to the agent.
-	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		t.Fatalf("Failed to make a gRPC connection to the agent: %v", err)
 	}

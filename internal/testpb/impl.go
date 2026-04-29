@@ -81,11 +81,10 @@ func NewTestClient(l *testing.T) (client FooClient, cleanup func()) {
 	go server.Serve(listener) //nolint: errcheck
 
 	// Initialize client.
-	clientConn, err := grpc.Dial(
+	clientConn, err := grpc.NewClient(
 		listener.Addr().String(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}),
-		grpc.WithBlock())
+		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}))
 
 	if err != nil {
 		l.Fatal(err)
