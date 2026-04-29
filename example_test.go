@@ -15,6 +15,7 @@
 package stackdriver_test
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -67,12 +68,13 @@ func Example_gKE() {
 	// This example shows how to set up a Stackdriver exporter suitable for
 	// monitoring a GKE container.
 
-	instanceID, err := metadata.InstanceID() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
+	ctx := context.Background()
+	instanceID, err := metadata.InstanceIDWithContext(ctx)
 	if err != nil {
 		log.Println("Error getting instance ID:", err)
 		instanceID = "unknown"
 	}
-	zone, err := metadata.Zone() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
+	zone, err := metadata.ZoneWithContext(ctx)
 	if err != nil {
 		log.Println("Error getting zone:", err)
 		zone = "unknown"

@@ -15,6 +15,7 @@
 package gcp
 
 import (
+	"context"
 	"log"
 	"os"
 	"strings"
@@ -56,20 +57,21 @@ type gcpMetadata struct {
 // This is only executed detectOnce.
 func retrieveGCPMetadata() *gcpMetadata {
 	gcpMetadata := gcpMetadata{}
+	ctx := context.Background()
 	var err error
-	gcpMetadata.instanceID, err = metadata.InstanceID() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
+	gcpMetadata.instanceID, err = metadata.InstanceIDWithContext(ctx)
 	if err != nil {
 		// Not a GCP environment
 		return &gcpMetadata
 	}
 
-	gcpMetadata.projectID, err = metadata.ProjectID() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
+	gcpMetadata.projectID, err = metadata.ProjectIDWithContext(ctx)
 	logError(err)
 
-	gcpMetadata.zone, err = metadata.Zone() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
+	gcpMetadata.zone, err = metadata.ZoneWithContext(ctx)
 	logError(err)
 
-	clusterName, err := metadata.InstanceAttributeValue("cluster-name") //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
+	clusterName, err := metadata.InstanceAttributeValueWithContext(ctx, "cluster-name")
 	logError(err)
 	gcpMetadata.clusterName = strings.TrimSpace(clusterName)
 
