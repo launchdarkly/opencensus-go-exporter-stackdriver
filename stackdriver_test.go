@@ -157,7 +157,7 @@ func TestClose(t *testing.T) {
 		t.Skip("STACKDRIVER_TEST_PROJECT_ID not set")
 	}
 
-	conn, err := grpc.Dial("monitoring.googleapis.com:443", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("monitoring.googleapis.com:443", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		t.Fatalf("cannot configure grpc conn: %v", err)
 	}

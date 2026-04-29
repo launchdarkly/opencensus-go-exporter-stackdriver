@@ -57,19 +57,19 @@ type gcpMetadata struct {
 func retrieveGCPMetadata() *gcpMetadata {
 	gcpMetadata := gcpMetadata{}
 	var err error
-	gcpMetadata.instanceID, err = metadata.InstanceID()
+	gcpMetadata.instanceID, err = metadata.InstanceID() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
 	if err != nil {
 		// Not a GCP environment
 		return &gcpMetadata
 	}
 
-	gcpMetadata.projectID, err = metadata.ProjectID()
+	gcpMetadata.projectID, err = metadata.ProjectID() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
 	logError(err)
 
-	gcpMetadata.zone, err = metadata.Zone()
+	gcpMetadata.zone, err = metadata.Zone() //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
 	logError(err)
 
-	clusterName, err := metadata.InstanceAttributeValue("cluster-name")
+	clusterName, err := metadata.InstanceAttributeValue("cluster-name") //nolint:staticcheck // SDK-2267: migrate to *WithContext variants
 	logError(err)
 	gcpMetadata.clusterName = strings.TrimSpace(clusterName)
 

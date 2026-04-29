@@ -373,7 +373,7 @@ func TestExportMaxTSPerRequestAcrossTwoMetrics(t *testing.T) {
 }
 
 func createConn(t *testing.T, addr string) *grpc.ClientConn {
-	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		t.Fatalf("Failed to make a gRPC connection to the server: %v", err)
 	}
