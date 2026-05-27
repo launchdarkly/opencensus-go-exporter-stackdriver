@@ -10,7 +10,6 @@ require (
 	github.com/golang/protobuf v1.5.4
 	github.com/google/go-cmp v0.7.0
 	github.com/jstemmer/go-junit-report v0.9.1
-	github.com/prometheus/prometheus v0.311.2
 	github.com/rakyll/embedmd v0.0.0-20171029212350-c8060a0752a2
 	go.opencensus.io v0.24.0
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
