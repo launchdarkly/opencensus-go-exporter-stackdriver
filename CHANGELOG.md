@@ -5,7 +5,7 @@
 
 ### Bug Fixes
 
-* This is my new message and conventional commit tag! ([165b0dc](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/commit/165b0dc03eb98696b6b69cc163c247d28502b2db))
+* Removes `github.com/prometheus/prometheus` as a direct dependency ([165b0dc](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/commit/165b0dc03eb98696b6b69cc163c247d28502b2db))
 
 ## [0.14.6](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/compare/v0.14.5...v0.14.6) (2026-04-29)
 
