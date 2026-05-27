@@ -33,7 +33,6 @@ import (
 	metricspb "github.com/census-instrumentation/opencensus-proto/gen-go/metrics/v1"
 	resourcepb "github.com/census-instrumentation/opencensus-proto/gen-go/resource/v1"
 	timestamppb "github.com/golang/protobuf/ptypes/timestamp"
-	promvalue "github.com/prometheus/prometheus/model/value"
 	distributionpb "google.golang.org/genproto/googleapis/api/distribution"
 	labelpb "google.golang.org/genproto/googleapis/api/label"
 	googlemetricpb "google.golang.org/genproto/googleapis/api/metric"
@@ -48,6 +47,15 @@ var percentileLabelKey = &metricspb.LabelKey{
 }
 var globalResource = &resource.Resource{Type: "global"}
 var domains = []string{"googleapis.com", "kubernetes.io", "istio.io", "knative.dev"}
+
+// promValueStaleNaN and isStaleNaN are copied from the prometheus project to avoid a direct
+// dependency on github.com/prometheus/prometheus.
+// See https://pkg.go.dev/github.com/prometheus/prometheus@v0.42.0/model/value#pkg-constants
+const promValueStaleNaN uint64 = 0x7ff0000000000002
+
+func isStaleNaN(v float64) bool {
+	return math.Float64bits(v) == promValueStaleNaN
+}
 
 // PushMetricsProto exports OpenCensus Metrics Proto to Stackdriver Monitoring synchronously,
 // without de-duping or adding proto metrics to the bundler.
@@ -494,7 +502,7 @@ func protoToMetricPoint(value interface{}) (*monitoringpb.TypedValue, error) { /
 		}, nil
 
 	case *metricspb.Point_DoubleValue:
-		if promvalue.IsStaleNaN(v.DoubleValue) {
+		if isStaleNaN(v.DoubleValue) {
 			return nil, nil
 		}
 		return &monitoringpb.TypedValue{ //nolint: staticcheck
@@ -507,7 +515,7 @@ func protoToMetricPoint(value interface{}) (*monitoringpb.TypedValue, error) { /
 		dv := v.DistributionValue
 		var mv *monitoringpb.TypedValue_DistributionValue
 		if dv != nil {
-			if isStaleInt64(dv.Count) || promvalue.IsStaleNaN(dv.Sum) {
+			if isStaleInt64(dv.Count) || isStaleNaN(dv.Sum) {
 				return nil, nil
 			}
 			var mean float64
@@ -547,7 +555,7 @@ func protoToMetricPoint(value interface{}) (*monitoringpb.TypedValue, error) { /
 }
 
 func isStaleInt64(v int64) bool {
-	return v == int64(math.Float64frombits(promvalue.StaleNaN))
+	return v == int64(math.Float64frombits(promValueStaleNaN))
 }
 
 func bucketCounts(buckets []*metricspb.DistributionValue_Bucket) []int64 {
