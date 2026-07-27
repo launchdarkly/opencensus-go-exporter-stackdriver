@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.14.8](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/compare/v0.14.7...v0.14.8) (2026-07-27)
+
+
+### Bug Fixes
+
+* Bump google.golang.org/grpc from 1.79.3 to 1.82.1 ([#31](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/issues/31)) ([1f49f0f](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/commit/1f49f0f63fc247148a1d132edd28bdc8f41e2ec9))
+* Bump vulnerable golang.org/x dependencies ([#29](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/issues/29)) ([a219785](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/commit/a219785ba1df8dc3a8cc55584d39e7bdbdeb294e))
+
 ## [0.14.7](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/compare/v0.14.6...v0.14.7) (2026-05-27)
 
 
