@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.9](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/compare/v0.14.8...v0.14.9) (2026-08-24)
+
+
+### Bug Fixes
+
+* Bump minimum Go version to 1.26 ([#32](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/issues/32)) ([a1d98b7](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/commit/a1d98b7b2b6415fbb2c4ce48bba2b73ada161def))
+
 ## [0.14.8](https://github.com/launchdarkly/opencensus-go-exporter-stackdriver/compare/v0.14.7...v0.14.8) (2026-07-27)
 
 
